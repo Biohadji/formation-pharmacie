@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0d9488">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="أكاديمية صيدلية عبد العزيز">
+    <meta name="description" content="تطبيق تكويني شامل لبائعي و محضري الصيدلية">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>أكاديمية صيدلية عبد العزيز للتكوين المستمر</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="img/icon.svg">
+    <link rel="icon" type="image/svg+xml" href="img/icon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Language Selection Screen -->
+        <div id="lang-screen" class="screen active">
+            <div class="lang-container">
+                <div class="lang-logo">
+                    <img src="img/logo.svg" alt="شعار صيدلية عبد العزيز">
+                </div>
+                <h1 class="lang-title-ar">أكاديمية صيدلية عبد العزيز</h1>
+                <h1 class="lang-title-fr">Académie Pharmacie Abdelaziz</h1>
+                <p class="lang-subtitle">للتكوين المستمر</p>
+                <div class="lang-buttons">
+                    <button class="lang-btn" onclick="selectLanguage('ar')">
+                        <span class="flag">🇩🇿</span>
+                        <span>العربية</span>
+                    </button>
+                    <button class="lang-btn" onclick="selectLanguage('fr')">
+                        <span class="flag">🇫🇷</span>
+                        <span>Français</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Screen -->
+        <div id="main-screen" class="screen">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <i class="fas fa-prescription-bottle-medical"></i>
+                    <span data-i18n="academy_name"></span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="showPage('home')" data-i18n="nav_home"></a>
+                    <a href="#" onclick="showPage('section1')" data-i18n="nav_section1"></a>
+                    <a href="#" onclick="showPage('section2')" data-i18n="nav_section2"></a>
+                    <a href="#" onclick="showPage('videos')" data-i18n="nav_videos"></a>
+                    <a href="#" onclick="showPage('assessment')" data-i18n="nav_assessment"></a>
+                    <a href="#" onclick="showPage('about')" data-i18n="nav_about"></a>
+                </div>
+                <div class="nav-actions">
+                    <div id="auth-buttons" class="auth-buttons">
+                        <button class="auth-btn login-btn" onclick="showPage('login')">
+                            <i class="fas fa-sign-in-alt"></i> <span data-i18n="nav_login"></span>
+                        </button>
+                        <button class="auth-btn register-btn" onclick="showPage('register')">
+                            <i class="fas fa-user-plus"></i> <span data-i18n="nav_register"></span>
+                        </button>
+                    </div>
+                    <div id="user-menu" class="user-menu hidden">
+                        <button class="user-menu-btn" onclick="toggleUserDropdown()">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="user-name-display"></span>
+                        </button>
+                        <div id="user-dropdown" class="user-dropdown">
+                            <a href="#" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i> <span data-i18n="nav_dashboard"></span></a>
+                            <a href="#" onclick="showPage('my-courses')"><i class="fas fa-book"></i> <span data-i18n="nav_my_courses"></span></a>
+                            <a href="#" onclick="showPage('certificate')"><i class="fas fa-certificate"></i> <span data-i18n="nav_certificate"></span></a>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout"></span></a>
+                        </div>
+                    </div>
+                    <div id="admin-menu" class="admin-menu hidden">
+                        <button class="admin-menu-btn" onclick="toggleAdminDropdown()">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Admin</span>
+                        </button>
+                        <div id="admin-dropdown" class="admin-dropdown">
+                            <a href="#" onclick="showPage('admin-dashboard')"><i class="fas fa-tachometer-alt"></i> <span data-i18n="nav_admin_dashboard"></span></a>
+                            <a href="#" onclick="showPage('admin-members')"><i class="fas fa-users"></i> <span data-i18n="nav_admin_members"></span></a>
+                            <a href="#" onclick="showPage('admin-codes')"><i class="fas fa-key"></i> <span data-i18n="nav_admin_codes"></span></a>
+                            <a href="#" onclick="showPage('admin-certificates')"><i class="fas fa-award"></i> <span data-i18n="nav_admin_certificates"></span></a>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout"></span></a>
+                        </div>
+                    </div>
+                    <button class="lang-toggle" onclick="toggleLanguage()">
+                        <i class="fas fa-language"></i>
+                        <span id="current-lang">AR</span>
+                    </button>
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="mobile-menu">
+                <a href="#" onclick="showPage('home')" data-i18n="nav_home"></a>
+                <a href="#" onclick="showPage('section1')" data-i18n="nav_section1"></a>
+                <a href="#" onclick="showPage('section2')" data-i18n="nav_section2"></a>
+                <a href="#" onclick="showPage('videos')" data-i18n="nav_videos"></a>
+                <a href="#" onclick="showPage('assessment')" data-i18n="nav_assessment"></a>
+                <a href="#" onclick="showPage('about')" data-i18n="nav_about"></a>
+                <div class="mobile-menu-divider"></div>
+                <a href="#" onclick="showPage('login')" id="mobile-login-link"><i class="fas fa-sign-in-alt"></i> <span data-i18n="nav_login"></span></a>
+                <a href="#" onclick="showPage('register')" id="mobile-register-link"><i class="fas fa-user-plus"></i> <span data-i18n="nav_register"></span></a>
+                <a href="#" onclick="showPage('dashboard')" id="mobile-dashboard-link" class="hidden"><i class="fas fa-tachometer-alt"></i> <span data-i18n="nav_dashboard"></span></a>
+                <a href="#" onclick="logout()" id="mobile-logout-link" class="hidden"><i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout"></span></a>
+            </div>
+
+            <!-- Home Page -->
+            <div id="page-home" class="page active">
+                <div class="hero">
+                    <div class="hero-logo">
+                        <img src="img/logo.svg" alt="شعار صيدلية عبد العزيز">
+                    </div>
+                    <div class="hero-content">
+                        <h1 data-i18n="hero_title"></h1>
+                        <p data-i18n="hero_subtitle"></p>
+                        <div class="hero-badge" data-i18n="hero_badge"></div>
+                        <button id="install-btn" class="install-btn" onclick="installApp()" style="display:none;">
+                            <i class="fas fa-download"></i>
+                            <span data-i18n="install_app"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="courses-section">
+                    <h2 data-i18n="courses_title"></h2>
+                    <div class="courses-grid">
+                        <!-- Course Card 1: Seller -->
+                        <div class="course-card" onclick="showPage('section1')">
+                            <div class="course-icon seller-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <h3 data-i18n="course1_title"></h3>
+                            <p data-i18n="course1_desc"></p>
+                            <div class="course-topics">
+                                <span data-i18n="course1_topic1"></span>
+                                <span data-i18n="course1_topic2"></span>
+                                <span data-i18n="course1_topic3"></span>
+                            </div>
+                            <div class="course-level">
+                                <span class="level-badge beginner" data-i18n="level_beginner"></span>
+                                <span class="level-badge advanced" data-i18n="level_advanced"></span>
+                            </div>
+                            <button class="course-btn" data-i18n="start_course"></button>
+                        </div>
+
+                        <!-- Course Card 2: Preparator -->
+                        <div class="course-card" onclick="showPage('section2')">
+                            <div class="course-icon preparator-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <h3 data-i18n="course2_title"></h3>
+                            <p data-i18n="course2_desc"></p>
+                            <div class="course-topics">
+                                <span data-i18n="course2_topic1"></span>
+                                <span data-i18n="course2_topic2"></span>
+                                <span data-i18n="course2_topic3"></span>
+                            </div>
+                            <div class="course-level">
+                                <span class="level-badge beginner" data-i18n="level_beginner"></span>
+                                <span class="level-badge advanced" data-i18n="level_advanced"></span>
+                            </div>
+                            <button class="course-btn" data-i18n="start_course"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div class="stat-item">
+                        <i class="fas fa-book-open"></i>
+                        <h3>15+</h3>
+                        <p data-i18n="stat_lessons"></p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-question-circle"></i>
+                        <h3>100+</h3>
+                        <p data-i18n="stat_questions"></p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-certificate"></i>
+                        <h3 data-i18n="stat_cert"></h3>
+                        <p data-i18n="stat_cert_desc"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Seller Course -->
+            <div id="page-section1" class="page">
+                <div class="section-header">
+                    <h1 data-i18n="s1_title"></h1>
+                    <p data-i18n="s1_subtitle"></p>
+                </div>
+
+                <div class="lessons-container">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l1')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">01</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l1_title"></h3>
+                                <p data-i18n="s1_l1_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l1" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l1_content"></div>
+                            </div>
+                            <div class="interactive-image">
+                                <h4><i class="fas fa-image"></i> <span data-i18n="interactive_title"></span></h4>
+                                <div class="image-placeholder pharmacy-layout">
+                                    <div class="pharmacy-grid">
+                                        <div class="grid-item" data-tooltip=" Moyens Généraux">
+                                            <i class="fas fa-boxes-stacked"></i>
+                                            <span data-i18n="pharmacy_zone1"></span>
+                                        </div>
+                                        <div class="grid-item" data-tooltip="Rayon Médicaments">
+                                            <i class="fas fa-pills"></i>
+                                            <span data-i18n="pharmacy_zone2"></span>
+                                        </div>
+                                        <div class="grid-item" data-tooltip="Rayon Parapharmacie">
+                                            <i class="fas fa-spa"></i>
+                                            <span data-i18n="pharmacy_zone3"></span>
+                                        </div>
+                                        <div class="grid-item" data-tooltip="Préparations">
+                                            <i class="fas fa-flask"></i>
+                                            <span data-i18n="pharmacy_zone4"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l2')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">02</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l2_title"></h3>
+                                <p data-i18n="s1_l2_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l2" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l2_content"></div>
+                            </div>
+                            <div class="interactive-image">
+                                <h4><i class="fas fa-image"></i> <span data-i18n="interactive_title"></span></h4>
+                                <div class="image-placeholder drug-categories">
+                                    <div class="drug-grid">
+                                        <div class="drug-card">
+                                            <i class="fas fa-heartbeat"></i>
+                                            <span data-i18n="drug_cat1"></span>
+                                        </div>
+                                        <div class="drug-card">
+                                            <i class="fas fa-brain"></i>
+                                            <span data-i18n="drug_cat2"></span>
+                                        </div>
+                                        <div class="drug-card">
+                                            <i class="fas fa-lungs"></i>
+                                            <span data-i18n="drug_cat3"></span>
+                                        </div>
+                                        <div class="drug-card">
+                                            <i class="fas fa-bone"></i>
+                                            <span data-i18n="drug_cat4"></span>
+                                        </div>
+                                        <div class="drug-card">
+                                            <i class="fas fa-stomach"></i>
+                                            <span data-i18n="drug_cat5"></span>
+                                        </div>
+                                        <div class="drug-card">
+                                            <i class="fas fa-tooth"></i>
+                                            <span data-i18n="drug_cat6"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l3')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">03</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l3_title"></h3>
+                                <p data-i18n="s1_l3_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l3" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l3_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l4')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">04</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l4_title"></h3>
+                                <p data-i18n="s1_l4_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l4" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l4_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 5 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l5')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">05</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l5_title"></h3>
+                                <p data-i18n="s1_l5_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l5" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l5_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 6 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l6')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">06</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l6_title"></h3>
+                                <p data-i18n="s1_l6_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l6" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l6_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 7 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l7')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">07</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l7_title"></h3>
+                                <p data-i18n="s1_l7_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l7" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l7_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 8 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l8')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">08</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l8_title"></h3>
+                                <p data-i18n="s1_l8_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l8" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l8_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 9 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l9')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">09</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l9_title"></h3>
+                                <p data-i18n="s1_l9_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l9" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l9_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 10 -->
+                    <div class="lesson-card" onclick="toggleLesson('s1-l10')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">10</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s1_l10_title"></h3>
+                                <p data-i18n="s1_l10_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s1-l10" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s1_l10_content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz at end of Section 1 -->
+                <div class="section-quiz">
+                    <div class="section-quiz-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h2 data-i18n="section_quiz_title"></h2>
+                        <p data-i18n="section_quiz_desc"></p>
+                    </div>
+                    <div id="section1-quiz-container" class="quiz-container">
+                        <!-- Section 1 quiz will be loaded here -->
+                    </div>
+                    <div id="section1-quiz-result" class="quiz-result hidden"></div>
+                </div>
+            </div>
+
+            <!-- Section 2: Preparator Course -->
+            <div id="page-section2" class="page">
+                <div class="section-header preparator-header">
+                    <h1 data-i18n="s2_title"></h1>
+                    <p data-i18n="s2_subtitle"></p>
+                </div>
+
+                <div class="lessons-container">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="toggleLesson('s2-l1')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">01</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s2_l1_title"></h3>
+                                <p data-i18n="s2_l1_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s2-l1" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s2_l1_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="toggleLesson('s2-l2')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">02</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s2_l2_title"></h3>
+                                <p data-i18n="s2_l2_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s2-l2" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s2_l2_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="toggleLesson('s2-l3')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">03</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s2_l3_title"></h3>
+                                <p data-i18n="s2_l3_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s2-l3" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s2_l3_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="lesson-card" onclick="toggleLesson('s2-l4')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">04</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s2_l4_title"></h3>
+                                <p data-i18n="s2_l4_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s2-l4" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s2_l4_content"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 5 -->
+                    <div class="lesson-card" onclick="toggleLesson('s2-l5')">
+                        <div class="lesson-header">
+                            <div class="lesson-number">05</div>
+                            <div class="lesson-info">
+                                <h3 data-i18n="s2_l5_title"></h3>
+                                <p data-i18n="s2_l5_preview"></p>
+                            </div>
+                            <i class="fas fa-chevron-down lesson-toggle"></i>
+                        </div>
+                        <div id="s2-l5" class="lesson-content">
+                            <div class="theory-box">
+                                <h4><i class="fas fa-graduation-cap"></i> <span data-i18n="theory_title"></span></h4>
+                                <div class="theory-text" data-i18n="s2_l5_content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz at end of Section 2 -->
+                <div class="section-quiz">
+                    <div class="section-quiz-header preparator-quiz-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h2 data-i18n="section_quiz_title"></h2>
+                        <p data-i18n="section_quiz_desc"></p>
+                    </div>
+                    <div id="section2-quiz-container" class="quiz-container">
+                        <!-- Section 2 quiz will be loaded here -->
+                    </div>
+                    <div id="section2-quiz-result" class="quiz-result hidden"></div>
+                </div>
+            </div>
+
+            <!-- Videos Page -->
+            <div id="page-videos" class="page">
+                <div class="section-header videos-header">
+                    <h1 data-i18n="videos_title"></h1>
+                    <p data-i18n="videos_subtitle"></p>
+                </div>
+
+                <div class="videos-container">
+                    <!-- Seller Videos -->
+                    <div class="videos-section">
+                        <h2><i class="fas fa-user-tie"></i> <span data-i18n="videos_seller_title"></span></h2>
+                        <div class="videos-grid">
+                            <div class="video-card">
+                                <div class="video-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_s1_title"></h3>
+                                    <p data-i18n="v_s1_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=formation+vendeur+pharmacie+français" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_s2_title"></h3>
+                                    <p data-i18n="v_s2_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=clipboard+pharmacie+formation" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_s3_title"></h3>
+                                    <p data-i18n="v_s3_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=ordonnance+medical+lecture+pharmacie" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_s4_title"></h3>
+                                    <p data-i18n="v_s4_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=interactions+medicamenteuses+pharmacie" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preparator Videos -->
+                    <div class="videos-section">
+                        <h2><i class="fas fa-flask"></i> <span data-i18n="videos_prep_title"></span></h2>
+                        <div class="videos-grid">
+                            <div class="video-card">
+                                <div class="video-preview preparator-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_p1_title"></h3>
+                                    <p data-i18n="v_p1_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=préparation+magistrale+pharmacie+formation" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview preparator-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_p2_title"></h3>
+                                    <p data-i18n="v_p2_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=matières+premières+pharmaceutiques" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview preparator-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_p3_title"></h3>
+                                    <p data-i18n="v_p3_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=mode+opératoire+préparation+pharmacie" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview preparator-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_p4_title"></h3>
+                                    <p data-i18n="v_p4_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=préparer+pommade+crème+pharmacie" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arabic Videos -->
+                    <div class="videos-section">
+                        <h2><i class="fas fa-language"></i> <span data-i18n="videos_ar_title"></span></h2>
+                        <div class="videos-grid">
+                            <div class="video-card">
+                                <div class="video-preview ar-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_ar1_title"></h3>
+                                    <p data-i18n="v_ar1_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=تكوين+صيدلاني+بالعربية" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview ar-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_ar2_title"></h3>
+                                    <p data-i18n="v_ar2_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query= المستحضرات+الصيدلانية+بالعربية" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="video-card">
+                                <div class="video-preview ar-preview">
+                                    <i class="fab fa-youtube"></i>
+                                </div>
+                                <div class="video-info">
+                                    <h3 data-i18n="v_ar3_title"></h3>
+                                    <p data-i18n="v_ar3_desc"></p>
+                                    <a href="https://www.youtube.com/results?search_query=الوصفات+الطبية+بالعربية" target="_blank" class="video-link">
+                                        <i class="fab fa-youtube"></i> <span data-i18n="watch_video"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment Page -->
+            <div id="page-assessment" class="page">
+                <div class="section-header assessment-header">
+                    <h1 data-i18n="assessment_title"></h1>
+                    <p data-i18n="assessment_subtitle"></p>
+                </div>
+
+                <div class="assessment-container">
+                    <!-- Seller Assessment -->
+                    <div class="assessment-card">
+                        <div class="assessment-icon seller-assessment">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h2 data-i18n="assessment_seller_title"></h2>
+                        <p data-i18n="assessment_seller_desc"></p>
+                        <div class="assessment-stats">
+                            <div class="stat">
+                                <i class="fas fa-question-circle"></i>
+                                <span>10 <span data-i18n="assessment_questions"></span></span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-clock"></i>
+                                <span>15 <span data-i18n="assessment_minutes"></span></span>
+                            </div>
+                        </div>
+                        <button class="assessment-btn" onclick="startAssessment('seller')">
+                            <i class="fas fa-play"></i> <span data-i18n="start_assessment"></span>
+                        </button>
+                    </div>
+
+                    <!-- Preparator Assessment -->
+                    <div class="assessment-card">
+                        <div class="assessment-icon preparator-assessment">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h2 data-i18n="assessment_prep_title"></h2>
+                        <p data-i18n="assessment_prep_desc"></p>
+                        <div class="assessment-stats">
+                            <div class="stat">
+                                <i class="fas fa-question-circle"></i>
+                                <span>10 <span data-i18n="assessment_questions"></span></span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-clock"></i>
+                                <span>15 <span data-i18n="assessment_minutes"></span></span>
+                            </div>
+                        </div>
+                        <button class="assessment-btn" onclick="startAssessment('preparator')">
+                            <i class="fas fa-play"></i> <span data-i18n="start_assessment"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Assessment Quiz Container -->
+                <div id="assessment-quiz-area" class="assessment-quiz-area hidden">
+                    <div class="assessment-quiz-header">
+                        <button class="back-btn" onclick="closeAssessment()">
+                            <i class="fas fa-arrow-right"></i> <span data-i18n="back_to_assessment"></span>
+                        </button>
+                        <h3 id="assessment-current-title"></h3>
+                    </div>
+                    <div id="assessment-quiz-container" class="quiz-container"></div>
+                    <div id="assessment-quiz-result" class="quiz-result hidden"></div>
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div id="page-about" class="page">
+                <div class="section-header about-header">
+                    <h1 data-i18n="about_title"></h1>
+                </div>
+
+                <div class="about-container">
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-prescription-bottle-medical"></i>
+                        </div>
+                        <h2 data-i18n="about_pharmacy_name"></h2>
+                        <div class="about-details">
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span data-i18n="about_address"></span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-city"></i>
+                                <span data-i18n="about_city"></span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone-alt"></i>
+                                <span data-i18n="about_phone"></span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>0549659691</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-card mission-card">
+                        <div class="about-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h2 data-i18n="about_mission_title"></h2>
+                        <p data-i18n="about_mission"></p>
+                    </div>
+
+                    <div class="about-card academy-card">
+                        <div class="about-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 data-i18n="about_academy_name"></h2>
+                        <p data-i18n="about_academy_desc"></p>
+                    </div>
+
+                    <div class="about-map">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <p data-i18n="about_map_text"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Page -->
+            <div id="page-register" class="page">
+                <div class="section-header register-header">
+                    <div class="auth-logo">
+                        <img src="img/logo.svg" alt="شعار صيدلية عبد العزيز">
+                    </div>
+                    <h1 data-i18n="register_title"></h1>
+                    <p data-i18n="register_subtitle"></p>
+                </div>
+                <div class="auth-container">
+                    <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> <span data-i18n="form_firstname"></span></label>
+                            <input type="text" id="reg-firstname" required placeholder="أدخل اسمك">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> <span data-i18n="form_lastname"></span></label>
+                            <input type="text" id="reg-lastname" required placeholder="أدخل لقبك">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> <span data-i18n="form_email"></span></label>
+                            <input type="email" id="reg-email" required placeholder="example@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> <span data-i18n="form_phone"></span></label>
+                            <input type="tel" id="reg-phone" required placeholder="0XXXXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> <span data-i18n="form_password"></span></label>
+                            <input type="password" id="reg-password" required placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> <span data-i18n="form_confirm_password"></span></label>
+                            <input type="password" id="reg-confirm-password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="auth-submit-btn">
+                            <i class="fas fa-user-plus"></i> <span data-i18n="register_btn"></span>
+                        </button>
+                        <p class="auth-link">
+                            <span data-i18n="register_have_account"></span>
+                            <a href="#" onclick="showPage('login')"><span data-i18n="register_login_link"></span></a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Login Page -->
+            <div id="page-login" class="page">
+                <div class="section-header login-header">
+                    <div class="auth-logo">
+                        <img src="img/logo.svg" alt="شعار صيدلية عبد العزيز">
+                    </div>
+                    <h1 data-i18n="login_title"></h1>
+                    <p data-i18n="login_subtitle"></p>
+                </div>
+                <div class="auth-container">
+                    <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> <span data-i18n="form_email"></span></label>
+                            <input type="email" id="login-email" required placeholder="example@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> <span data-i18n="form_password"></span></label>
+                            <input type="password" id="login-password" placeholder="••••••••">
+                        </div>
+                        <div class="form-group activation-code-group">
+                            <label><i class="fas fa-key"></i> <span data-i18n="form_activation_code"></span></label>
+                            <input type="text" id="login-activation-code" placeholder="XXXX-XXXX-XXXX">
+                            <small data-i18n="form_activation_hint"></small>
+                        </div>
+                        <button type="submit" class="auth-submit-btn">
+                            <i class="fas fa-sign-in-alt"></i> <span data-i18n="login_btn"></span>
+                        </button>
+                        <p class="admin-hint">
+                            <i class="fas fa-info-circle"></i>
+                            ${currentLang === 'ar' ? 'للدخول كأدمن: اكتب biohadji@gmail.com فقط' : 'Admin: Entrez biohadji@gmail.com seulement'}
+                        </p>
+                        <p class="auth-link">
+                            <span data-i18n="login_no_account"></span>
+                            <a href="#" onclick="showPage('register')"><span data-i18n="login_register_link"></span></a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Activation Code Page -->
+            <div id="page-activate" class="page">
+                <div class="section-header activate-header">
+                    <h1 data-i18n="activate_title"></h1>
+                    <p data-i18n="activate_subtitle"></p>
+                </div>
+                <div class="auth-container">
+                    <form id="activate-form" class="auth-form" onsubmit="handleActivate(event)">
+                        <div class="form-group">
+                            <label><i class="fas fa-key"></i> <span data-i18n="form_enter_code"></span></label>
+                            <input type="text" id="activate-code" required placeholder="XXXX-XXXX-XXXX">
+                        </div>
+                        <button type="submit" class="auth-submit-btn activate-btn">
+                            <i class="fas fa-check-circle"></i> <span data-i18n="activate_btn"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- User Dashboard -->
+            <div id="page-dashboard" class="page">
+                <div class="section-header dashboard-header">
+                    <h1 data-i18n="dashboard_title"></h1>
+                </div>
+                <div class="dashboard-container">
+                    <div class="dashboard-stats">
+                        <div class="dash-stat">
+                            <i class="fas fa-book-open"></i>
+                            <h3 id="dash-courses-count">0</h3>
+                            <p data-i18n="dash_enrolled_courses"></p>
+                        </div>
+                        <div class="dash-stat">
+                            <i class="fas fa-check-circle"></i>
+                            <h3 id="dash-completed-count">0</h3>
+                            <p data-i18n="dash_completed"></p>
+                        </div>
+                        <div class="dash-stat">
+                            <i class="fas fa-star"></i>
+                            <h3 id="dash-score">0%</h3>
+                            <p data-i18n="dash_avg_score"></p>
+                        </div>
+                        <div class="dash-stat">
+                            <i class="fas fa-certificate"></i>
+                            <h3 id="dash-cert-status" data-i18n="dash_no_cert"></h3>
+                            <p data-i18n="dash_certificate"></p>
+                        </div>
+                    </div>
+                    <div class="dashboard-info">
+                        <div class="dash-card">
+                            <h3><i class="fas fa-user"></i> <span data-i18n="dash_personal_info"></span></h3>
+                            <div id="dash-user-info"></div>
+                        </div>
+                        <div class="dash-card">
+                            <h3><i class="fas fa-key"></i> <span data-i18n="dash_activation_code"></span></h3>
+                            <div id="dash-activation-code" class="activation-code-display"></div>
+                            <p class="code-note" data-i18n="dash_code_note"></p>
+                        </div>
+                        <div class="dash-card">
+                            <h3><i class="fas fa-chart-line"></i> <span data-i18n="dash_performance"></span></h3>
+                            <div id="dash-performance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Courses Page -->
+            <div id="page-my-courses" class="page">
+                <div class="section-header">
+                    <h1 data-i18n="my_courses_title"></h1>
+                </div>
+                <div class="my-courses-container" id="my-courses-list">
+                    <!-- Courses will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Certificate Page -->
+            <div id="page-certificate" class="page">
+                <div class="section-header certificate-header">
+                    <h1 data-i18n="certificate_title"></h1>
+                </div>
+                <div class="certificate-container" id="certificate-area">
+                    <!-- Certificate will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div id="page-admin-dashboard" class="page">
+                <div class="section-header admin-header">
+                    <h1><i class="fas fa-user-shield"></i> <span data-i18n="admin_dashboard_title"></span></h1>
+                </div>
+                <div class="admin-container">
+                    <div class="admin-stats">
+                        <div class="admin-stat">
+                            <i class="fas fa-users"></i>
+                            <h3 id="admin-total-members">0</h3>
+                            <p data-i18n="admin_total_members"></p>
+                        </div>
+                        <div class="admin-stat">
+                            <i class="fas fa-user-check"></i>
+                            <h3 id="admin-active-members">0</h3>
+                            <p data-i18n="admin_active_members"></p>
+                        </div>
+                        <div class="admin-stat">
+                            <i class="fas fa-user-clock"></i>
+                            <h3 id="admin-pending-members">0</h3>
+                            <p data-i18n="admin_pending_members"></p>
+                        </div>
+                        <div class="admin-stat">
+                            <i class="fas fa-award"></i>
+                            <h3 id="admin-certified">0</h3>
+                            <p data-i18n="admin_certified"></p>
+                        </div>
+                    </div>
+                    <div class="admin-quick-actions">
+                        <h3 data-i18n="admin_quick_actions"></h3>
+                        <div class="admin-actions-grid">
+                            <button onclick="showPage('admin-members')" class="admin-action-btn">
+                                <i class="fas fa-users"></i>
+                                <span data-i18n="admin_manage_members"></span>
+                            </button>
+                            <button onclick="showPage('admin-codes')" class="admin-action-btn">
+                                <i class="fas fa-key"></i>
+                                <span data-i18n="admin_manage_codes"></span>
+                            </button>
+                            <button onclick="showPage('admin-certificates')" class="admin-action-btn">
+                                <i class="fas fa-award"></i>
+                                <span data-i18n="admin_manage_certificates"></span>
+                            </button>
+                            <button onclick="showPage('admin-scores')" class="admin-action-btn">
+                                <i class="fas fa-chart-bar"></i>
+                                <span data-i18n="admin_view_scores"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Members Page -->
+            <div id="page-admin-members" class="page">
+                <div class="section-header admin-header">
+                    <h1><i class="fas fa-users"></i> <span data-i18n="admin_members_title"></span></h1>
+                </div>
+                <div class="admin-table-container">
+                    <div class="admin-search">
+                        <input type="text" id="member-search" placeholder="بحث عن عضو..." oninput="searchMembers()">
+                    </div>
+                    <table class="admin-table" id="members-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="th_name"></th>
+                                <th data-i18n="th_email"></th>
+                                <th data-i18n="th_phone"></th>
+                                <th data-i18n="th_status"></th>
+                                <th data-i18n="th_actions"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="members-tbody">
+                            <!-- Members will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Codes Page -->
+            <div id="page-admin-codes" class="page">
+                <div class="section-header admin-header">
+                    <h1><i class="fas fa-key"></i> <span data-i18n="admin_codes_title"></span></h1>
+                </div>
+                <div class="admin-container">
+                    <div class="generate-code-section">
+                        <h3 data-i18n="admin_generate_code"></h3>
+                        <div class="generate-form">
+                            <select id="code-member-select">
+                                <option value="" data-i18n="select_member"></option>
+                            </select>
+                            <select id="code-course-select">
+                                <option value="all" data-i18n="all_courses"></option>
+                                <option value="seller" data-i18n="course_seller"></option>
+                                <option value="preparator" data-i18n="course_preparator"></option>
+                            </select>
+                            <button onclick="generateActivationCode()" class="generate-btn">
+                                <i class="fas fa-plus"></i> <span data-i18n="generate_code_btn"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="codes-list-section">
+                        <h3 data-i18n="existing_codes"></h3>
+                        <table class="admin-table" id="codes-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_member"></th>
+                                    <th data-i18n="th_code"></th>
+                                    <th data-i18n="th_course"></th>
+                                    <th data-i18n="th_used"></th>
+                                    <th data-i18n="th_actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="codes-tbody">
+                                <!-- Codes will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Certificates Page -->
+            <div id="page-admin-certificates" class="page">
+                <div class="section-header admin-header">
+                    <h1><i class="fas fa-award"></i> <span data-i18n="admin_certificates_title"></span></h1>
+                </div>
+                <div class="admin-container">
+                    <div class="issue-certificate-section">
+                        <h3 data-i18n="admin_issue_cert"></h3>
+                        <div class="generate-form">
+                            <select id="cert-member-select">
+                                <option value="" data-i18n="select_member"></option>
+                            </select>
+                            <select id="cert-course-select">
+                                <option value="seller" data-i18n="course_seller"></option>
+                                <option value="preparator" data-i18n="course_preparator"></option>
+                            </select>
+                            <button onclick="issueCertificate()" class="generate-btn cert-btn">
+                                <i class="fas fa-award"></i> <span data-i18n="issue_cert_btn"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="certificates-list-section">
+                        <h3 data-i18n="issued_certificates"></h3>
+                        <table class="admin-table" id="certificates-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_member"></th>
+                                    <th data-i18n="th_course"></th>
+                                    <th data-i18n="th_score"></th>
+                                    <th data-i18n="th_date"></th>
+                                    <th data-i18n="th_actions"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="certificates-tbody">
+                                <!-- Certificates will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Scores Page -->
+            <div id="page-admin-scores" class="page">
+                <div class="section-header admin-header">
+                    <h1><i class="fas fa-chart-bar"></i> <span data-i18n="admin_scores_title"></span></h1>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table" id="scores-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="th_member"></th>
+                                <th data-i18n="th_seller_score"></th>
+                                <th data-i18n="th_prep_score"></th>
+                                <th data-i18n="th_best_score"></th>
+                                <th data-i18n="th_status"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="scores-tbody">
+                            <!-- Scores will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Floating Install Button for Mobile -->
+            <div id="mobile-install-banner" class="mobile-install-banner" style="display:none;">
+                <div class="install-banner-content">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="install-banner-text">
+                        <strong data-i18n="install_title"></strong>
+                        <p data-i18n="install_subtitle"></p>
+                    </div>
+                    <button class="install-banner-btn" onclick="installApp()">
+                        <i class="fas fa-download"></i> <span data-i18n="install_now"></span>
+                    </button>
+                    <button class="install-banner-close" onclick="closeInstallBanner()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <i class="fas fa-prescription-bottle-medical"></i>
+                        <span data-i18n="academy_name"></span>
+                    </div>
+                    <p class="footer-copy" data-i18n="footer_copy"></p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
