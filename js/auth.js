@@ -188,7 +188,7 @@ function closeRegistrationModal() {
         modal.classList.add('closing');
         setTimeout(() => {
             modal.remove();
-            showPage('login');
+            showPage('home');
         }, 300);
     }
 }
