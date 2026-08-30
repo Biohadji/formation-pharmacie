@@ -19,7 +19,7 @@ const translations = {
         // Install App
         install_app: "تحميل التطبيق",
         install_title: "حمّل التطبيق على هاتفك",
-        install_subtitle: "للوصول السريع وال_PERCENT offline",
+        install_subtitle: "للوصول السريع وبدون إنترنت",
         install_now: "تحميل",
 
         // Lesson Navigation
