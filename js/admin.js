@@ -4,7 +4,7 @@
 const EMAILJS_CONFIG = {
     serviceId: 'service_2ci0tcc',
     templateId: 'template_28xez7n',
-    publicKey: 'VSDLVI3M2R3K2V5G3F5MICGPRZ33VCI2CS2RN3JYVYQFTLQGLTSV6MTXPFOZIGXT'
+    publicKey: 'rPo_Tki8RELkiT3iK'
 };
 
 // Initialize EmailJS
