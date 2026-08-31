@@ -1,10 +1,10 @@
 // Admin Dashboard Functions
 
-// EmailJS Configuration - Replace with your credentials
+// EmailJS Configuration
 const EMAILJS_CONFIG = {
-    serviceId: 'YOUR_SERVICE_ID',      // e.g., 'gmail' or your service ID
-    templateId: 'YOUR_TEMPLATE_ID',    // Your email template ID
-    publicKey: 'YOUR_PUBLIC_KEY'       // Your EmailJS public key
+    serviceId: 'service_2ci0tcc',
+    templateId: 'template_28xez7n',
+    publicKey: 'VSDLVI3M2R3K2V5G3F5MICGPRZ33VCI2CS2RN3JYVYQFTLQGLTSV6MTXPFOZIGXT'
 };
 
 // Initialize EmailJS
