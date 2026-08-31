@@ -145,30 +145,31 @@ function approveMember(memberId) {
         const member = users[memberIndex];
         const userName = member.firstname + ' ' + member.lastname;
         const phone = member.phone;
-        const countryCode = member.countryCode || '+213';
         
-        // Format phone number for WhatsApp (remove + and leading 0 after country code)
+        // Format phone number for WhatsApp (digits only, no + or 0 prefix)
         let formattedPhone = phone.replace(/\D/g, ''); // Remove all non-digits
-        if (formattedPhone.startsWith('0')) {
-            formattedPhone = formattedPhone.substring(1); // Remove leading 0
+        // Ensure it starts with country code (213 for Algeria)
+        if (!formattedPhone.startsWith('213')) {
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '213' + formattedPhone.substring(1);
+            } else {
+                formattedPhone = '213' + formattedPhone;
+            }
         }
-        // Add country code without +
-        const countryCodeDigits = countryCode.replace('+', '');
-        formattedPhone = countryCodeDigits + formattedPhone;
         
-        // WhatsApp message
-        const whatsappMessage = currentLang === 'ar'
-            ? `مرحباً ${userName}،\n\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز.\nكود التفعيل: *${code}*\n\nتسجيل الدخول:\nالبريد: ${member.email}\nكود التفعيل: ${code}\n\nشكراً لك`
-            : `Bonjour ${userName},\n\nVotre compte a été activé.\nCode d'activation: *${code}*\n\nConnexion:\nEmail: ${member.email}\nCode: ${code}\n\nMerci`;
+        // WhatsApp message - simple and clean
+        const whatsappMessage = `مرحباً ${userName}\n\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز\nكود التفعيل: ${code}\n\nالبريد: ${member.email}\nشكراً لك`;
         
         // Open WhatsApp with pre-filled message
         const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
-        window.open(whatsappUrl, '_blank');
+        
+        // Open in new window
+        const whatsappWindow = window.open(whatsappUrl, '_blank');
         
         showAlert(
             currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود: ${code}\nتم فتح واتساب لإرسال الكود إلى ${formattedPhone}`
-                : `Membre approuvé. Code: ${code}\nWhatsApp ouvert pour envoyer le code à ${formattedPhone}`,
+                ? `تم الموافقة على العضو. كود: ${code}\nجاري فتح واتساب...`
+                : `Membre approuvé. Code: ${code}\nOuverture de WhatsApp...`,
             'success'
         );
 

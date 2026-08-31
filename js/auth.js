@@ -197,27 +197,76 @@ function showRegistrationSuccess() {
 
 // Open BaridiMob Payment
 function openBaridiMob() {
-    // BaridiMob payment link or QR code
-    const baridiMobUrl = 'https://baridimob.com/payment'; // Replace with actual payment link
-    
-    // Show payment instructions
-    const instructions = currentLang === 'ar'
-        ? 'تفاصيل الدفع:\n\n' +
-          '1. افتح تطبيق بريدي موب\n' +
-          '2. اختر "إرسال أموال"\n' +
-          '3. أدخل رقم الحساب: 7999999999\n' +
-          '4. المبلغ: 500 دج\n' +
-          '5. في التعليق: أدخل اسمك الكامل\n\n' +
-          'أو اتصل بنا: 0549659691'
-        : 'Instructions de paiement:\n\n' +
-          '1. Ouvrez l\'application BaridiMob\n' +
-          '2. Sélectionnez "Envoyer de l\'argent"\n' +
-          '3. Entrez le numéro de compte: 7999999999\n' +
-          '4. Montant: 500 DA\n' +
-          '5. Dans le commentaire: entrez votre nom complet\n\n' +
-          'Ou contactez-nous: 0549659691';
-    
-    alert(instructions);
+    // Create payment modal
+    const existingModal = document.querySelector('.payment-modal');
+    if (existingModal) existingModal.remove();
+
+    const modal = document.createElement('div');
+    modal.className = 'payment-modal';
+    modal.innerHTML = `
+        <div class="modal-overlay" onclick="closePaymentModal()"></div>
+        <div class="modal-content payment-modal-content">
+            <div class="modal-icon payment">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h2>${currentLang === 'ar' ? 'الدفع عبر بريدي موب' : 'Paiement via BaridiMob'}</h2>
+            <div class="payment-details">
+                <div class="payment-amount">
+                    <span class="amount-label">${currentLang === 'ar' ? 'المبلغ' : 'Montant'}</span>
+                    <span class="amount-value">500 ${currentLang === 'ar' ? 'دج' : 'DA'}</span>
+                </div>
+                <div class="payment-info">
+                    <div class="info-row">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <span class="info-label">${currentLang === 'ar' ? 'الاسم' : 'Nom'}</span>
+                            <span class="info-value">عبد العزيز إبراهيم</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <span class="info-label">${currentLang === 'ar' ? 'الهاتف' : 'Téléphone'}</span>
+                            <span class="info-value">0549659691</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-comment"></i>
+                        <div>
+                            <span class="info-label">${currentLang === 'ar' ? 'في التعليق' : 'Dans le commentaire'}</span>
+                            <span class="info-value">${currentLang === 'ar' ? 'أدخل اسمك الكامل' : 'Entrez votre nom complet'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-steps">
+                    <h3>${currentLang === 'ar' ? 'خطوات الدفع' : 'Étapes de paiement'}</h3>
+                    <ol>
+                        <li>${currentLang === 'ar' ? 'افتح تطبيق بريدي موب' : 'Ouvrez l\'application BaridiMob'}</li>
+                        <li>${currentLang === 'ar' ? 'اختر "إرسال أموال"' : 'Sélectionnez "Envoyer de l\'argent"'}</li>
+                        <li>${currentLang === 'ar' ? 'أدخل رقم الهاتف: 0549659691' : 'Entrez le numéro: 0549659691'}</li>
+                        <li>${currentLang === 'ar' ? 'أدخل المبلغ: 500 دج' : 'Entrez le montant: 500 DA'}</li>
+                        <li>${currentLang === 'ar' ? 'في التعليق: أدخل اسمك الكامل' : 'Dans le commentaire: votre nom complet'}</li>
+                    </ol>
+                </div>
+                <a href="https://baridimob.com" target="_blank" class="baridimob-open-btn">
+                    <i class="fab fa-android"></i> ${currentLang === 'ar' ? 'فتح بريدي موب' : 'Ouvrir BaridiMob'}
+                </a>
+            </div>
+            <button class="modal-close-btn" onclick="closePaymentModal()">
+                <i class="fas fa-times"></i> ${currentLang === 'ar' ? 'إغلاق' : 'Fermer'}
+            </button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// Close Payment Modal
+function closePaymentModal() {
+    const modal = document.querySelector('.payment-modal');
+    if (modal) {
+        modal.classList.add('closing');
+        setTimeout(() => modal.remove(), 300);
+    }
 }
 
 // Close Registration Modal
