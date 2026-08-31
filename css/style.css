@@ -23,6 +23,13 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -31,20 +38,23 @@ body {
     color: var(--text);
     line-height: 1.6;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-}
-
-html {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    position: relative;
+    min-height: 100vh;
+    touch-action: pan-y;
 }
 
 [dir="rtl"] body {
     font-family: 'Segoe UI', 'Arial', 'Tahoma', sans-serif;
+    direction: rtl;
+    text-align: right;
 }
 
 [dir="ltr"] body {
     font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    direction: ltr;
+    text-align: left;
 }
 
 .screen {
@@ -1334,6 +1344,20 @@ html {
         max-height: calc(100vh - 60px);
         overflow-y: auto;
         z-index: 999;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .page {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        min-height: calc(100vh - 60px);
+        padding-bottom: 80px;
+    }
+
+    .lesson-card.open .lesson-content {
+        max-height: none;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
