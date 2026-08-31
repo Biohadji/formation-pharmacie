@@ -31,6 +31,12 @@ body {
     color: var(--text);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+html {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 [dir="rtl"] body {
@@ -601,6 +607,8 @@ body {
 
 .lesson-card.open .lesson-content {
     max-height: 5000px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .lesson-content > div {
@@ -1269,6 +1277,7 @@ body {
 
     .page {
         padding: 15px;
+        min-height: calc(100vh - 60px);
     }
 
     .lesson-header {
@@ -1285,6 +1294,46 @@ body {
 
     .quiz-question {
         padding: 20px;
+    }
+
+    .lesson-nav {
+        padding: 15px;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .lesson-nav-btn {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+
+    .hero {
+        padding: 40px 20px;
+    }
+
+    .hero-logo img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .auth-logo img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .lang-logo img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        z-index: 999;
     }
 }
 
