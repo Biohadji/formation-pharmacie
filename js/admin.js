@@ -146,7 +146,8 @@ function approveMember(memberId) {
         const userName = member.firstname + ' ' + member.lastname;
         
         sendActivationEmail(member.email, userName, code)
-            .then(() => {
+            .then((response) => {
+                console.log('Email sent:', response);
                 const emailMsg = currentLang === 'ar'
                     ? `\nتم إرسال كود التفعيل إلى: ${member.email}`
                     : `\nCode envoyé à : ${member.email}`;
@@ -157,11 +158,13 @@ function approveMember(memberId) {
                     'success'
                 );
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Email error:', error);
+                const errorMsg = error.text || error.message || 'Unknown error';
                 showAlert(
                     currentLang === 'ar'
-                        ? `تم الموافقة على العضو. كود التفعيل: ${code}\n(فشل إرسال البريد - أرسل الكود يدوياً)`
-                        : `Membre approuvé. Code: ${code}\n(Échec de l'envoi - envoyez le code manuellement)`,
+                        ? `الموافقة نجحت. كود: ${code}\nخطأ الإيميل: ${errorMsg}`
+                        : `Approuvé. Code: ${code}\nErreur email: ${errorMsg}`,
                     'warning'
                 );
             });
