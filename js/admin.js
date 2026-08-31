@@ -10,7 +10,12 @@ const EMAILJS_CONFIG = {
 // Initialize EmailJS
 function initEmailJS() {
     if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY') {
-        emailjs.init(EMAILJS_CONFIG.publicKey);
+        emailjs.init({
+            publicKey: EMAILJS_CONFIG.publicKey
+        });
+        console.log('EmailJS initialized successfully');
+    } else {
+        console.log('EmailJS not loaded or not configured');
     }
 }
 
@@ -32,6 +37,8 @@ function sendActivationEmail(userEmail, userName, activationCode) {
                 ? 'تم تفعيل حسابك في أكاديمية صيدلية عبد العزيز. كود التفعيل الخاص بك هو:'
                 : 'Votre compte a été activé. Votre code d\'activation est :'
         };
+
+        console.log('Sending email with params:', templateParams);
 
         emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
             .then((response) => {
