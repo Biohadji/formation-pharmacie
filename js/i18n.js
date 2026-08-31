@@ -119,6 +119,7 @@ const translations = {
         login_btn: "دخول",
         login_no_account: "ليس لديك حساب؟",
         login_register_link: "سجل الآن",
+        admin_hint: "للدخول كأدمن: اكتب biohadji@gmail.com فقط",
 
         // Activation
         activate_title: "تفعيل الحساب",
@@ -868,6 +869,7 @@ Vitamine C 250mg + vitamine B 50mg + excipient q.s<br>
         login_btn: "Se connecter",
         login_no_account: "Pas encore de compte ?",
         login_register_link: "S'inscrire",
+        admin_hint: "Admin: Entrez biohadji@gmail.com seulement",
 
         // Activation
         activate_title: "Activation du compte",
