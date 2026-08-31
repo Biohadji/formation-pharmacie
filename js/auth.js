@@ -609,6 +609,9 @@ function printCertificate() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     initAdmin();
+    if (typeof initEmailJS === 'function') {
+        initEmailJS();
+    }
 
     const currentUser = getFromStorage(STORAGE_KEYS.CURRENT_USER, null);
     if (currentUser) {

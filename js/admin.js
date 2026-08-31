@@ -1,5 +1,50 @@
 // Admin Dashboard Functions
 
+// EmailJS Configuration - Replace with your credentials
+const EMAILJS_CONFIG = {
+    serviceId: 'YOUR_SERVICE_ID',      // e.g., 'gmail' or your service ID
+    templateId: 'YOUR_TEMPLATE_ID',    // Your email template ID
+    publicKey: 'YOUR_PUBLIC_KEY'       // Your EmailJS public key
+};
+
+// Initialize EmailJS
+function initEmailJS() {
+    if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init(EMAILJS_CONFIG.publicKey);
+    }
+}
+
+// Send activation code email
+function sendActivationEmail(userEmail, userName, activationCode) {
+    return new Promise((resolve, reject) => {
+        if (typeof emailjs === 'undefined' || EMAILJS_CONFIG.publicKey === 'YOUR_PUBLIC_KEY') {
+            console.log('EmailJS not configured. Email not sent.');
+            resolve({ status: 'skipped' });
+            return;
+        }
+
+        const templateParams = {
+            to_name: userName,
+            to_email: userEmail,
+            activation_code: activationCode,
+            pharmacy_name: 'صيدلية عبد العزيز',
+            message: currentLang === 'ar' 
+                ? 'تم تفعيل حسابك في أكاديمية صيدلية عبد العزيز. كود التفعيل الخاص بك هو:'
+                : 'Votre compte a été activé. Votre code d\'activation est :'
+        };
+
+        emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
+            .then((response) => {
+                console.log('Email sent successfully:', response);
+                resolve(response);
+            })
+            .catch((error) => {
+                console.error('Failed to send email:', error);
+                reject(error);
+            });
+    });
+}
+
 // Load Admin Data
 function loadAdminData() {
     loadAdminStats();
@@ -82,12 +127,30 @@ function approveMember(memberId) {
         });
         saveToStorage(STORAGE_KEYS.ACTIVATION_CODES, codes);
 
-        showAlert(
-            currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود التفعيل: ${code}`
-                : `Membre approuvé. Code d'activation: ${code}`,
-            'success'
-        );
+        // Send activation email
+        const member = users[memberIndex];
+        const userName = member.firstname + ' ' + member.lastname;
+        
+        sendActivationEmail(member.email, userName, code)
+            .then(() => {
+                const emailMsg = currentLang === 'ar'
+                    ? `\nتم إرسال كود التفعيل إلى: ${member.email}`
+                    : `\nCode envoyé à : ${member.email}`;
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود التفعيل: ${code}${emailMsg}`
+                        : `Membre approuvé. Code: ${code}${emailMsg}`,
+                    'success'
+                );
+            })
+            .catch(() => {
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود التفعيل: ${code}\n(فشل إرسال البريد - أرسل الكود يدوياً)`
+                        : `Membre approuvé. Code: ${code}\n(Échec de l'envoi - envoyez le code manuellement)`,
+                    'warning'
+                );
+            });
 
         loadAdminData();
     }
