@@ -141,33 +141,39 @@ function approveMember(memberId) {
         });
         saveToStorage(STORAGE_KEYS.ACTIVATION_CODES, codes);
 
-        // Send activation email
+        // Send activation SMS via WhatsApp
         const member = users[memberIndex];
         const userName = member.firstname + ' ' + member.lastname;
+        const phone = member.phone;
         
-        sendActivationEmail(member.email, userName, code)
-            .then((response) => {
-                console.log('Email sent:', response);
-                const emailMsg = currentLang === 'ar'
-                    ? `\nتم إرسال كود التفعيل إلى: ${member.email}`
-                    : `\nCode envoyé à : ${member.email}`;
-                showAlert(
-                    currentLang === 'ar'
-                        ? `تم الموافقة على العضو. كود التفعيل: ${code}${emailMsg}`
-                        : `Membre approuvé. Code: ${code}${emailMsg}`,
-                    'success'
-                );
-            })
-            .catch((error) => {
-                console.error('Email error:', error);
-                const errorMsg = error.text || error.message || 'Unknown error';
-                showAlert(
-                    currentLang === 'ar'
-                        ? `الموافقة نجحت. كود: ${code}\nخطأ الإيميل: ${errorMsg}`
-                        : `Approuvé. Code: ${code}\nErreur email: ${errorMsg}`,
-                    'warning'
-                );
-            });
+        // Build WhatsApp message
+        const message = currentLang === 'ar'
+            ? `مرحباً ${userName}،\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز.\nكود التفعيل: ${code}\n\nشكراً لك`
+            : `Bonjour ${userName},\nVotre compte a été activé.\nCode d'activation: ${code}\n\nMerci`;
+        
+        // Open WhatsApp with pre-filled message
+        const whatsappUrl = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(message)}`;
+        
+        showAlert(
+            currentLang === 'ar'
+                ? `تم الموافقة على العضو. كود التفعيل: ${code}\n\nاضغط "إرسال عبر واتساب" لإرسال الكود`
+                : `Membre approuvé. Code: ${code}\n\nCliquez "Envoyer via WhatsApp" pour envoyer le code`,
+            'success'
+        );
+        
+        // Show WhatsApp send button
+        setTimeout(() => {
+            const alertEl = document.querySelector('.alert-message');
+            if (alertEl) {
+                const whatsappBtn = document.createElement('a');
+                whatsappBtn.href = whatsappUrl;
+                whatsappBtn.target = '_blank';
+                whatsappBtn.className = 'whatsapp-send-btn';
+                whatsappBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${currentLang === 'ar' ? 'إرسال عبر واتساب' : 'Envoyer via WhatsApp'}`;
+                whatsappBtn.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#25D366;color:white;border-radius:8px;text-decoration:none;margin-top:10px;font-weight:600;';
+                alertEl.appendChild(whatsappBtn);
+            }
+        }, 500);
 
         loadAdminData();
     }

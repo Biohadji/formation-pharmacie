@@ -74,7 +74,9 @@ function handleRegister(event) {
     const firstname = document.getElementById('reg-firstname').value.trim();
     const lastname = document.getElementById('reg-lastname').value.trim();
     const email = document.getElementById('reg-email').value.trim();
+    const countryCode = document.getElementById('reg-country-code').value;
     const phone = document.getElementById('reg-phone').value.trim();
+    const fullPhone = countryCode + phone;
     const password = document.getElementById('reg-password').value;
     const confirmPassword = document.getElementById('reg-confirm-password').value;
 
@@ -97,10 +99,10 @@ function handleRegister(event) {
         return;
     }
 
-    // Validate phone number (Algerian format)
-    const phoneRegex = /^(05|06|07)\d{8}$/;
+    // Validate phone number
+    const phoneRegex = /^\d{8,12}$/;
     if (!phoneRegex.test(phone)) {
-        showAlert(currentLang === 'ar' ? 'رقم الهاتف غير صحيح (مثال: 0555555555)' : 'Numéro de téléphone invalide (ex: 0555555555)', 'error');
+        showAlert(currentLang === 'ar' ? 'رقم الهاتف غير صحيح' : 'Numéro de téléphone invalide', 'error');
         return;
     }
 
@@ -129,7 +131,8 @@ function handleRegister(event) {
         firstname,
         lastname,
         email,
-        phone,
+        phone: fullPhone,
+        countryCode,
         password,
         role: 'member',
         status: 'pending',
