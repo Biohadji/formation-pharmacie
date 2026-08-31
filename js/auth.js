@@ -323,8 +323,9 @@ function handleActivate(event) {
 // Update UI for logged in user
 function updateUIForLoggedInUser(user) {
     document.getElementById('auth-buttons').classList.add('hidden');
-    document.getElementById('mobile-login-link').classList.add('hidden');
-    document.getElementById('mobile-register-link').classList.add('hidden');
+    if (document.getElementById('mobile-register-link')) {
+        document.getElementById('mobile-register-link').classList.add('hidden');
+    }
 
     if (user.role === 'admin') {
         document.getElementById('admin-menu').classList.remove('hidden');
@@ -342,8 +343,9 @@ function updateUIForLoggedOut() {
     document.getElementById('auth-buttons').classList.remove('hidden');
     document.getElementById('user-menu').classList.add('hidden');
     document.getElementById('admin-menu').classList.add('hidden');
-    document.getElementById('mobile-login-link').classList.remove('hidden');
-    document.getElementById('mobile-register-link').classList.remove('hidden');
+    if (document.getElementById('mobile-register-link')) {
+        document.getElementById('mobile-register-link').classList.remove('hidden');
+    }
     document.getElementById('mobile-dashboard-link').classList.add('hidden');
     document.getElementById('mobile-logout-link').classList.add('hidden');
 }
