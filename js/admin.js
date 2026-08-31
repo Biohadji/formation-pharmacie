@@ -152,56 +152,81 @@ function approveMember(memberId) {
             ? `مرحباً ${userName}، كود التفعيل: ${code} - أكاديمية صيدلية عبد العزيز`
             : `Bonjour ${userName}, Code: ${code} - Académie Pharmacie Abdelaziz`;
         
-        // Build SMS gateway URL (using SMS APIs)
-        let smsSent = false;
-        
-        // Try to send via Email-to-SMS gateway (free)
-        if (countryCode === '+213') {
-            // Algeria - extract operator from phone prefix
-            const phonePrefix = phone.substring(0, 2);
-            let smsGateway = '';
-            
-            if (['05', '06', '07'].includes(phonePrefix)) {
-                // Mobilis
-                smsGateway = `${phone}@sms.mobilis.dz`;
-            } else if (['03', '04'].includes(phonePrefix)) {
-                // Djezzy
-                smsGateway = `${phone}@windows.djezzy.com`;
-            } else if (['08', '09'].includes(phonePrefix)) {
-                // Ooredoo
-                smsGateway = `${phone}@sms.ooredoo.dz`;
-            }
-            
-            if (smsGateway) {
-                // Open default email client with SMS gateway
-                const mailtoUrl = `mailto:${smsGateway}?subject=Activation Code&body=${encodeURIComponent(smsMessage)}`;
-                window.open(mailtoUrl, '_blank');
-                smsSent = true;
-            }
+        // Format phone number for international format
+        let formattedPhone = phone;
+        if (phone.startsWith('0')) {
+            formattedPhone = countryCode + phone.substring(1);
+        } else {
+            formattedPhone = countryCode + phone;
         }
         
-        showAlert(
-            currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود التفعيل: ${code}\n\n${smsSent ? 'تم فتح برنامج البريد لإرسال SMS' : 'أرسل الكود يدوياً عبر واتساب'}`
-                : `Membre approuvé. Code: ${code}\n\n${smsSent ? 'Email ouvert pour envoyer SMS' : 'Envoyez le code manuellement via WhatsApp'}`,
-            'success'
-        );
+        // Send SMS via TextBelt API (1 free SMS/day)
+        const smsUrl = 'https://textbelt.com/text';
+        const smsData = new URLSearchParams();
+        smsData.append('phone', formattedPhone);
+        smsData.append('message', smsMessage);
+        smsData.append('key', 'textbelt');
         
-        // Show WhatsApp backup button
-        setTimeout(() => {
-            const alertEl = document.querySelector('.alert-message');
-            if (alertEl) {
-                const phoneClean = phone.replace(/^0/, '213');
-                const whatsappUrl = `https://wa.me/${countryCode.replace('+', '')}${phoneClean}?text=${encodeURIComponent(smsMessage)}`;
-                const whatsappBtn = document.createElement('a');
-                whatsappBtn.href = whatsappUrl;
-                whatsappBtn.target = '_blank';
-                whatsappBtn.className = 'whatsapp-send-btn';
-                whatsappBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${currentLang === 'ar' ? 'أو أرسل عبر واتساب' : 'Ou envoyer via WhatsApp'}`;
-                whatsappBtn.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#25D366;color:white;border-radius:8px;text-decoration:none;margin-top:10px;font-weight:600;';
-                alertEl.appendChild(whatsappBtn);
+        fetch(smsUrl, {
+            method: 'POST',
+            body: smsData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('SMS response:', data);
+            if (data.success) {
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود: ${code}\nتم إرسال SMS بنجاح إلى ${formattedPhone}`
+                        : `Membre approuvé. Code: ${code}\nSMS envoyé avec succès à ${formattedPhone}`,
+                    'success'
+                );
+            } else {
+                // Fallback to WhatsApp
+                const whatsappUrl = `https://wa.me/${formattedPhone.replace('+', '')}?text=${encodeURIComponent(smsMessage)}`;
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود: ${code}\nفشل SMS - أرسل يدوياً`
+                        : `Membre approuvé. Code: ${code}\nSMS échoué - envoyez manuellement`,
+                    'warning'
+                );
+                // Show WhatsApp button
+                setTimeout(() => {
+                    const alertEl = document.querySelector('.alert-message');
+                    if (alertEl) {
+                        const whatsappBtn = document.createElement('a');
+                        whatsappBtn.href = whatsappUrl;
+                        whatsappBtn.target = '_blank';
+                        whatsappBtn.innerHTML = `<i class="fab fa-whatsapp"></i> WhatsApp`;
+                        whatsappBtn.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#25D366;color:white;border-radius:8px;text-decoration:none;margin-top:10px;font-weight:600;';
+                        alertEl.appendChild(whatsappBtn);
+                    }
+                }, 500);
             }
-        }, 500);
+        })
+        .catch(error => {
+            console.error('SMS error:', error);
+            // Fallback to WhatsApp
+            const whatsappUrl = `https://wa.me/${formattedPhone.replace('+', '')}?text=${encodeURIComponent(smsMessage)}`;
+            showAlert(
+                currentLang === 'ar'
+                    ? `تم الموافقة على العضو. كود: ${code}\nخطأ في الاتصال - أرسل يدوياً`
+                    : `Membre approuvé. Code: ${code}\nErreur - envoyez manuellement`,
+                'warning'
+            );
+            // Show WhatsApp button
+            setTimeout(() => {
+                const alertEl = document.querySelector('.alert-message');
+                if (alertEl) {
+                    const whatsappBtn = document.createElement('a');
+                    whatsappBtn.href = whatsappUrl;
+                    whatsappBtn.target = '_blank';
+                    whatsappBtn.innerHTML = `<i class="fab fa-whatsapp"></i> WhatsApp`;
+                    whatsappBtn.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#25D366;color:white;border-radius:8px;text-decoration:none;margin-top:10px;font-weight:600;';
+                    alertEl.appendChild(whatsappBtn);
+                }
+            }, 500);
+        });
 
         loadAdminData();
     }
