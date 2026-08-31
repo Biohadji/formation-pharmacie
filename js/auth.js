@@ -76,7 +76,12 @@ function handleRegister(event) {
     const email = document.getElementById('reg-email').value.trim();
     const countryCode = document.getElementById('reg-country-code').value;
     const phone = document.getElementById('reg-phone').value.trim();
-    const fullPhone = countryCode + phone;
+    // Format phone: remove leading 0 when combining with country code
+    let phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.startsWith('0')) {
+        phoneDigits = phoneDigits.substring(1);
+    }
+    const fullPhone = countryCode + phoneDigits;
     const password = document.getElementById('reg-password').value;
     const confirmPassword = document.getElementById('reg-confirm-password').value;
 

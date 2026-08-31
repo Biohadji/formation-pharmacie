@@ -147,13 +147,14 @@ function approveMember(memberId) {
         const phone = member.phone;
         const countryCode = member.countryCode || '+213';
         
-        // Format phone number
-        let formattedPhone = phone;
-        if (phone.startsWith('0')) {
-            formattedPhone = countryCode + phone.substring(1);
-        } else {
-            formattedPhone = countryCode + phone;
+        // Format phone number for WhatsApp (remove + and leading 0 after country code)
+        let formattedPhone = phone.replace(/\D/g, ''); // Remove all non-digits
+        if (formattedPhone.startsWith('0')) {
+            formattedPhone = formattedPhone.substring(1); // Remove leading 0
         }
+        // Add country code without +
+        const countryCodeDigits = countryCode.replace('+', '');
+        formattedPhone = countryCodeDigits + formattedPhone;
         
         // WhatsApp message
         const whatsappMessage = currentLang === 'ar'
@@ -161,13 +162,13 @@ function approveMember(memberId) {
             : `Bonjour ${userName},\n\nVotre compte a été activé.\nCode d'activation: *${code}*\n\nConnexion:\nEmail: ${member.email}\nCode: ${code}\n\nMerci`;
         
         // Open WhatsApp with pre-filled message
-        const whatsappUrl = `https://wa.me/${formattedPhone.replace('+', '')}?text=${encodeURIComponent(whatsappMessage)}`;
+        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
         window.open(whatsappUrl, '_blank');
         
         showAlert(
             currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود: ${code}\nتم فتح واتساب لإرسال الكود`
-                : `Membre approuvé. Code: ${code}\nWhatsApp ouvert pour envoyer le code`,
+                ? `تم الموافقة على العضو. كود: ${code}\nتم فتح واتساب لإرسال الكود إلى ${formattedPhone}`
+                : `Membre approuvé. Code: ${code}\nWhatsApp ouvert pour envoyer le code à ${formattedPhone}`,
             'success'
         );
 
