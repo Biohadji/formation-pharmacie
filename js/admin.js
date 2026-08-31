@@ -141,35 +141,63 @@ function approveMember(memberId) {
         });
         saveToStorage(STORAGE_KEYS.ACTIVATION_CODES, codes);
 
-        // Send activation SMS via WhatsApp
+        // Send activation SMS
         const member = users[memberIndex];
         const userName = member.firstname + ' ' + member.lastname;
         const phone = member.phone;
+        const countryCode = member.countryCode || '+213';
         
-        // Build WhatsApp message
-        const message = currentLang === 'ar'
-            ? `مرحباً ${userName}،\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز.\nكود التفعيل: ${code}\n\nشكراً لك`
-            : `Bonjour ${userName},\nVotre compte a été activé.\nCode d'activation: ${code}\n\nMerci`;
+        // SMS message
+        const smsMessage = currentLang === 'ar'
+            ? `مرحباً ${userName}، كود التفعيل: ${code} - أكاديمية صيدلية عبد العزيز`
+            : `Bonjour ${userName}, Code: ${code} - Académie Pharmacie Abdelaziz`;
         
-        // Open WhatsApp with pre-filled message
-        const whatsappUrl = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(message)}`;
+        // Build SMS gateway URL (using SMS APIs)
+        let smsSent = false;
+        
+        // Try to send via Email-to-SMS gateway (free)
+        if (countryCode === '+213') {
+            // Algeria - extract operator from phone prefix
+            const phonePrefix = phone.substring(0, 2);
+            let smsGateway = '';
+            
+            if (['05', '06', '07'].includes(phonePrefix)) {
+                // Mobilis
+                smsGateway = `${phone}@sms.mobilis.dz`;
+            } else if (['03', '04'].includes(phonePrefix)) {
+                // Djezzy
+                smsGateway = `${phone}@windows.djezzy.com`;
+            } else if (['08', '09'].includes(phonePrefix)) {
+                // Ooredoo
+                smsGateway = `${phone}@sms.ooredoo.dz`;
+            }
+            
+            if (smsGateway) {
+                // Open default email client with SMS gateway
+                const mailtoUrl = `mailto:${smsGateway}?subject=Activation Code&body=${encodeURIComponent(smsMessage)}`;
+                window.open(mailtoUrl, '_blank');
+                smsSent = true;
+            }
+        }
         
         showAlert(
             currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود التفعيل: ${code}\n\nاضغط "إرسال عبر واتساب" لإرسال الكود`
-                : `Membre approuvé. Code: ${code}\n\nCliquez "Envoyer via WhatsApp" pour envoyer le code`,
+                ? `تم الموافقة على العضو. كود التفعيل: ${code}\n\n${smsSent ? 'تم فتح برنامج البريد لإرسال SMS' : 'أرسل الكود يدوياً عبر واتساب'}`
+                : `Membre approuvé. Code: ${code}\n\n${smsSent ? 'Email ouvert pour envoyer SMS' : 'Envoyez le code manuellement via WhatsApp'}`,
             'success'
         );
         
-        // Show WhatsApp send button
+        // Show WhatsApp backup button
         setTimeout(() => {
             const alertEl = document.querySelector('.alert-message');
             if (alertEl) {
+                const phoneClean = phone.replace(/^0/, '213');
+                const whatsappUrl = `https://wa.me/${countryCode.replace('+', '')}${phoneClean}?text=${encodeURIComponent(smsMessage)}`;
                 const whatsappBtn = document.createElement('a');
                 whatsappBtn.href = whatsappUrl;
                 whatsappBtn.target = '_blank';
                 whatsappBtn.className = 'whatsapp-send-btn';
-                whatsappBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${currentLang === 'ar' ? 'إرسال عبر واتساب' : 'Envoyer via WhatsApp'}`;
+                whatsappBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${currentLang === 'ar' ? 'أو أرسل عبر واتساب' : 'Ou envoyer via WhatsApp'}`;
                 whatsappBtn.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#25D366;color:white;border-radius:8px;text-decoration:none;margin-top:10px;font-weight:600;';
                 alertEl.appendChild(whatsappBtn);
             }
