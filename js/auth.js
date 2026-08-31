@@ -163,13 +163,19 @@ function showRegistrationSuccess() {
             <h2>${currentLang === 'ar' ? 'تم التسجيل بنجاح!' : 'Inscription réussie !'}</h2>
             <div class="modal-message">
                 <p>${currentLang === 'ar'
-                    ? 'تم استلام طلب التسجيل الخاص بك.'
-                    : 'Votre demande d\'inscription a été reçue.'}</p>
+                    ? 'ستتلقى كود التفعيل للدورة عبر رسالة في الواتساب'
+                    : 'Vous recevrez le code d\'activation via WhatsApp'}</p>
                 <div class="payment-notice">
                     <i class="fas fa-info-circle"></i>
                     <p><strong>${currentLang === 'ar'
-                        ? 'سيتم دراسة ملفك وإرسال كود التفعيل الخاص بك بعد دفع الرسوم.'
-                        : 'Votre dossier sera examiné et votre code d\'activation vous sera envoyé après le paiement des frais.'}</strong></p>
+                        ? 'بعد دراسة ملفك و دفع الرسوم الرمزية 500 دج'
+                        : 'Après examen de votre dossier et paiement des frais symboliques de 500 DA'}</strong></p>
+                </div>
+                <div class="payment-section">
+                    <p>${currentLang === 'ar' ? 'الدفع عبر بريدي موب:' : 'Payer via BaridiMob:'}</p>
+                    <button class="baridimob-btn" onclick="openBaridiMob()">
+                        <i class="fas fa-mobile-alt"></i> ${currentLang === 'ar' ? 'دفع عبر بريدي موب' : 'Payer avec BaridiMob'}
+                    </button>
                 </div>
                 <p class="thank-you">${currentLang === 'ar' ? 'شكراً لكم' : 'Merci'}</p>
             </div>
@@ -182,6 +188,31 @@ function showRegistrationSuccess() {
 
     // Clear form
     document.getElementById('register-form').reset();
+}
+
+// Open BaridiMob Payment
+function openBaridiMob() {
+    // BaridiMob payment link or QR code
+    const baridiMobUrl = 'https://baridimob.com/payment'; // Replace with actual payment link
+    
+    // Show payment instructions
+    const instructions = currentLang === 'ar'
+        ? 'تفاصيل الدفع:\n\n' +
+          '1. افتح تطبيق بريدي موب\n' +
+          '2. اختر "إرسال أموال"\n' +
+          '3. أدخل رقم الحساب: 7999999999\n' +
+          '4. المبلغ: 500 دج\n' +
+          '5. في التعليق: أدخل اسمك الكامل\n\n' +
+          'أو اتصل بنا: 0549659691'
+        : 'Instructions de paiement:\n\n' +
+          '1. Ouvrez l\'application BaridiMob\n' +
+          '2. Sélectionnez "Envoyer de l\'argent"\n' +
+          '3. Entrez le numéro de compte: 7999999999\n' +
+          '4. Montant: 500 DA\n' +
+          '5. Dans le commentaire: entrez votre nom complet\n\n' +
+          'Ou contactez-nous: 0549659691';
+    
+    alert(instructions);
 }
 
 // Close Registration Modal
