@@ -97,6 +97,22 @@ function applyTranslations() {
 
 // Navigation
 function showPage(page) {
+    // Check if user is logged in for protected pages
+    const protectedPages = ['dashboard', 'my-courses', 'assessment', 'certificate'];
+    if (protectedPages.includes(page)) {
+        const currentUser = getFromStorage(STORAGE_KEYS.CURRENT_USER, null);
+        if (!currentUser) {
+            showAlert(
+                currentLang === 'ar'
+                    ? 'يجب التسجيل أولاً للوصول إلى هذه الصفحة'
+                    : 'Vous devez vous inscrire d\'abord pour accéder à cette page',
+                'warning'
+            );
+            showPage('registration');
+            return;
+        }
+    }
+
     currentPage = page;
 
     // Hide all pages
