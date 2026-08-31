@@ -22,9 +22,12 @@ function initEmailJS() {
 // Send activation code email
 function sendActivationEmail(userEmail, userName, activationCode) {
     return new Promise((resolve, reject) => {
-        if (typeof emailjs === 'undefined' || EMAILJS_CONFIG.publicKey === 'YOUR_PUBLIC_KEY') {
-            console.log('EmailJS not configured. Email not sent.');
-            resolve({ status: 'skipped' });
+        console.log('EmailJS available:', typeof emailjs !== 'undefined');
+        console.log('Config:', EMAILJS_CONFIG);
+        
+        if (typeof emailjs === 'undefined') {
+            console.error('EmailJS library not loaded!');
+            reject(new Error('EmailJS not loaded'));
             return;
         }
 
@@ -39,14 +42,18 @@ function sendActivationEmail(userEmail, userName, activationCode) {
         };
 
         console.log('Sending email with params:', templateParams);
+        console.log('Service ID:', EMAILJS_CONFIG.serviceId);
+        console.log('Template ID:', EMAILJS_CONFIG.templateId);
 
         emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
             .then((response) => {
-                console.log('Email sent successfully:', response);
+                console.log('SUCCESS! Status:', response.status, 'Text:', response.text);
                 resolve(response);
             })
             .catch((error) => {
-                console.error('Failed to send email:', error);
+                console.error('FAILED! Error:', error);
+                console.error('Error status:', error.status);
+                console.error('Error text:', error.text);
                 reject(error);
             });
     });
