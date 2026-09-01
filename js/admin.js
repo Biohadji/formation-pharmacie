@@ -35,51 +35,41 @@ const EMAILJS_CONFIG = {
 
 // Initialize EmailJS
 function initEmailJS() {
-    if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY') {
+    if (typeof emailjs !== 'undefined') {
         emailjs.init({
             publicKey: EMAILJS_CONFIG.publicKey
         });
-        console.log('EmailJS initialized successfully');
-    } else {
-        console.log('EmailJS not loaded or not configured');
+        console.log('EmailJS initialized');
     }
 }
 
 // Send activation code email
 function sendActivationEmail(userEmail, userName, activationCode) {
     return new Promise((resolve, reject) => {
-        console.log('EmailJS available:', typeof emailjs !== 'undefined');
-        console.log('Config:', EMAILJS_CONFIG);
-        
         if (typeof emailjs === 'undefined') {
-            console.error('EmailJS library not loaded!');
             reject(new Error('EmailJS not loaded'));
             return;
         }
+
+        initEmailJS();
 
         const templateParams = {
             to_name: userName,
             to_email: userEmail,
             activation_code: activationCode,
-            pharmacy_name: 'صيدلية عبد العزيز',
-            message: currentLang === 'ar' 
-                ? 'تم تفعيل حسابك في أكاديمية صيدلية عبد العزيز. كود التفعيل الخاص بك هو:'
-                : 'Votre compte a été activé. Votre code d\'activation est :'
+            from_name: 'أكاديمية صيدلية عبد العزيز',
+            reply_to: userEmail
         };
 
-        console.log('Sending email with params:', templateParams);
-        console.log('Service ID:', EMAILJS_CONFIG.serviceId);
-        console.log('Template ID:', EMAILJS_CONFIG.templateId);
+        console.log('Sending email to:', userEmail, 'Code:', activationCode);
 
         emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
             .then((response) => {
-                console.log('SUCCESS! Status:', response.status, 'Text:', response.text);
+                console.log('Email sent successfully:', response);
                 resolve(response);
             })
             .catch((error) => {
-                console.error('FAILED! Error:', error);
-                console.error('Error status:', error.status);
-                console.error('Error text:', error.text);
+                console.error('Email send failed:', error);
                 reject(error);
             });
     });
