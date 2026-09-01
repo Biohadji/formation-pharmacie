@@ -1,6 +1,7 @@
 // Global State
 let currentLang = 'ar';
 let currentPage = 'home';
+let deferredPrompt = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
@@ -19,7 +20,56 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add lesson navigation after DOM is loaded
     setTimeout(addLessonNavigation, 100);
+    
+    // PWA Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showInstallButton();
+    });
+    
+    // Show install button if already installable
+    window.addEventListener('appinstalled', () => {
+        hideInstallButton();
+        deferredPrompt = null;
+    });
 });
+
+// Show Install Button
+function showInstallButton() {
+    let installBtn = document.getElementById('install-app-btn');
+    if (!installBtn) {
+        installBtn = document.createElement('button');
+        installBtn.id = 'install-app-btn';
+        installBtn.className = 'install-app-btn';
+        installBtn.innerHTML = '<i class="fas fa-download"></i> <span data-i18n="install_app"></span>';
+        installBtn.onclick = installApp;
+        document.body.appendChild(installBtn);
+    }
+    installBtn.style.display = 'flex';
+}
+
+// Hide Install Button
+function hideInstallButton() {
+    const installBtn = document.getElementById('install-app-btn');
+    if (installBtn) {
+        installBtn.style.display = 'none';
+    }
+}
+
+// Install App
+function installApp() {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('App installed');
+        }
+        deferredPrompt = null;
+        hideInstallButton();
+    });
+}
 
 // Add navigation buttons to all lessons
 function addLessonNavigation() {

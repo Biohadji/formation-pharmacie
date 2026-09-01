@@ -3094,3 +3094,44 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-dark);
 }
+
+/* ========= Install App Button ========= */
+.install-app-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+    transition: var(--transition);
+    animation: pulse 2s infinite;
+}
+
+.install-app-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(13, 148, 136, 0.5);
+}
+
+.install-app-btn i {
+    font-size: 1.2rem;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4); }
+    50% { box-shadow: 0 6px 30px rgba(13, 148, 136, 0.6); }
+}
+
+[dir="ltr"] .install-app-btn {
+    left: auto;
+    right: 20px;
+}
