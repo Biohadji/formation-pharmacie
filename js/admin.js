@@ -1,5 +1,31 @@
 // Admin Dashboard Functions
 
+// Helper function to copy text to clipboard
+function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {
+            fallbackCopy(text);
+        });
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        console.error('Copy failed:', err);
+    }
+    document.body.removeChild(textArea);
+}
+
 // EmailJS Configuration
 const EMAILJS_CONFIG = {
     serviceId: 'service_2ci0tcc',
@@ -146,35 +172,54 @@ function approveMember(memberId) {
         const userName = member.firstname + ' ' + member.lastname;
         const phone = member.phone;
         
-        // Format phone number for WhatsApp (digits only, no + or 0 prefix)
+        // Format phone number for WhatsApp (digits only)
         let formattedPhone = phone.replace(/\D/g, ''); // Remove all non-digits
+        
         // Ensure it starts with country code (213 for Algeria)
-        if (!formattedPhone.startsWith('213')) {
-            if (formattedPhone.startsWith('0')) {
-                formattedPhone = '213' + formattedPhone.substring(1);
-            } else {
-                formattedPhone = '213' + formattedPhone;
-            }
+        if (formattedPhone.startsWith('0')) {
+            formattedPhone = '213' + formattedPhone.substring(1);
+        } else if (!formattedPhone.startsWith('213')) {
+            formattedPhone = '213' + formattedPhone;
         }
         
         // WhatsApp message - simple and clean
         const whatsappMessage = `مرحباً ${userName}\n\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز\nكود التفعيل: ${code}\n\nالبريد: ${member.email}\nشكراً لك`;
         
-        // Copy message to clipboard first
-        navigator.clipboard.writeText(whatsappMessage).catch(() => {});
-        
-        // Open WhatsApp with pre-filled message
+        // Build WhatsApp URL
         const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
         
-        // Open in new window
-        window.open(whatsappUrl, '_blank');
-        
-        showAlert(
-            currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود: ${code}\nتم نسخ الرسالة - الصقها في واتساب وأرسلها`
-                : `Membre approuvé. Code: ${code}\nMessage copié - collez et envoyez via WhatsApp`,
-            'success'
-        );
+        // Try to open WhatsApp
+        try {
+            const newWindow = window.open(whatsappUrl, '_blank');
+            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                // Popup blocked - copy message and show instructions
+                copyToClipboard(whatsappMessage);
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود: ${code}\nتم نسخ الرسالة. الصقها في واتساب: ${formattedPhone}`
+                        : `Membre approuvé. Code: ${code}\nMessage copié. Collez-le dans WhatsApp: ${formattedPhone}`,
+                    'warning'
+                );
+            } else {
+                // WhatsApp opened successfully
+                copyToClipboard(whatsappMessage);
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود: ${code}\nتم فتح واتساب - أرسل الرسالة`
+                        : `Membre approuvé. Code: ${code}\nWhatsApp ouvert - envoyez le message`,
+                    'success'
+                );
+            }
+        } catch (e) {
+            // Error opening WhatsApp
+            copyToClipboard(whatsappMessage);
+            showAlert(
+                currentLang === 'ar'
+                    ? `تم الموافقة على العضو. كود: ${code}\nتم نسخ الرسالة. أرسلها يدوياً عبر واتساب`
+                    : `Membre approuvé. Code: ${code}\nMessage copié. Envoyez-le manuellement via WhatsApp`,
+                'warning'
+            );
+        }
 
         loadAdminData();
     }
