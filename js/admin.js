@@ -160,16 +160,19 @@ function approveMember(memberId) {
         // WhatsApp message - simple and clean
         const whatsappMessage = `مرحباً ${userName}\n\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز\nكود التفعيل: ${code}\n\nالبريد: ${member.email}\nشكراً لك`;
         
+        // Copy message to clipboard first
+        navigator.clipboard.writeText(whatsappMessage).catch(() => {});
+        
         // Open WhatsApp with pre-filled message
         const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
         
         // Open in new window
-        const whatsappWindow = window.open(whatsappUrl, '_blank');
+        window.open(whatsappUrl, '_blank');
         
         showAlert(
             currentLang === 'ar'
-                ? `تم الموافقة على العضو. كود: ${code}\nجاري فتح واتساب...`
-                : `Membre approuvé. Code: ${code}\nOuverture de WhatsApp...`,
+                ? `تم الموافقة على العضو. كود: ${code}\nتم نسخ الرسالة - الصقها في واتساب وأرسلها`
+                : `Membre approuvé. Code: ${code}\nMessage copié - collez et envoyez via WhatsApp`,
             'success'
         );
 
