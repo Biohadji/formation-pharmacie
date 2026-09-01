@@ -209,10 +209,10 @@ function openBaridiMob() {
             <div class="modal-icon payment">
                 <i class="fas fa-mobile-alt"></i>
             </div>
-            <h2>${currentLang === 'ar' ? 'الدفع عبر بريدي موب' : 'Paiement via BaridiMob'}</h2>
+            <h2>${currentLang === 'ar' ? 'لدفع عبر تطبيق بريدي موب' : 'Paiement via BaridiMob'}</h2>
             <div class="payment-details">
                 <div class="payment-amount">
-                    <span class="amount-label">${currentLang === 'ar' ? 'المبلغ' : 'Montant'}</span>
+                    <span class="amount-label">${currentLang === 'ar' ? 'إشتراك الدورة' : 'Frais d\'inscription'}</span>
                     <span class="amount-value">500 ${currentLang === 'ar' ? 'دج' : 'DA'}</span>
                 </div>
                 <div class="payment-info">
@@ -220,21 +220,19 @@ function openBaridiMob() {
                         <i class="fas fa-user"></i>
                         <div>
                             <span class="info-label">${currentLang === 'ar' ? 'الاسم' : 'Nom'}</span>
-                            <span class="info-value">عبد العزيز إبراهيم</span>
+                            <span class="info-value">حاج اسماعيل ابراهيم</span>
                         </div>
                     </div>
                     <div class="info-row">
-                        <i class="fas fa-phone"></i>
+                        <i class="fas fa-hashtag"></i>
                         <div>
-                            <span class="info-label">${currentLang === 'ar' ? 'الهاتف' : 'Téléphone'}</span>
-                            <span class="info-value">0549659691</span>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <i class="fas fa-comment"></i>
-                        <div>
-                            <span class="info-label">${currentLang === 'ar' ? 'في التعليق' : 'Dans le commentaire'}</span>
-                            <span class="info-value">${currentLang === 'ar' ? 'أدخل اسمك الكامل' : 'Entrez votre nom complet'}</span>
+                            <span class="info-label">RIP</span>
+                            <span class="info-value rip-value">
+                                <span id="rip-number">00799999000580262063</span>
+                                <button class="copy-rip-btn" onclick="copyRip()" title="${currentLang === 'ar' ? 'نسخ' : 'Copier'}">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -242,15 +240,20 @@ function openBaridiMob() {
                     <h3>${currentLang === 'ar' ? 'خطوات الدفع' : 'Étapes de paiement'}</h3>
                     <ol>
                         <li>${currentLang === 'ar' ? 'افتح تطبيق بريدي موب' : 'Ouvrez l\'application BaridiMob'}</li>
-                        <li>${currentLang === 'ar' ? 'اختر "إرسال أموال"' : 'Sélectionnez "Envoyer de l\'argent"'}</li>
-                        <li>${currentLang === 'ar' ? 'أدخل رقم الهاتف: 0549659691' : 'Entrez le numéro: 0549659691'}</li>
+                        <li>${currentLang === 'ar' ? 'اختر "تحويل"' : 'Sélectionnez "Transfert"'}</li>
+                        <li>${currentLang === 'ar' ? 'أدخل رقم RIP' : 'Entrez le numéro RIP'}</li>
                         <li>${currentLang === 'ar' ? 'أدخل المبلغ: 500 دج' : 'Entrez le montant: 500 DA'}</li>
-                        <li>${currentLang === 'ar' ? 'في التعليق: أدخل اسمك الكامل' : 'Dans le commentaire: votre nom complet'}</li>
+                        <li>${currentLang === 'ar' ? 'إرسال ، قم بعمل كبتور للوصل وأرسله في الواتساب' : 'Envoyez, capturez l\'écran et envoyez via WhatsApp'}</li>
                     </ol>
                 </div>
-                <a href="https://baridimob.com" target="_blank" class="baridimob-open-btn">
-                    <i class="fab fa-android"></i> ${currentLang === 'ar' ? 'فتح بريدي موب' : 'Ouvrir BaridiMob'}
-                </a>
+                <div class="payment-actions">
+                    <a href="https://baridimob.com" target="_blank" class="baridimob-open-btn">
+                        <i class="fas fa-mobile-alt"></i> ${currentLang === 'ar' ? 'فتح بريدي موب' : 'Ouvrir BaridiMob'}
+                    </a>
+                    <a href="https://wa.me/213549659691?text=${encodeURIComponent(currentLang === 'ar' ? 'تم الدفع - إرفاق الوصل' : 'Paiement effectué - Joindre le reçu')}" target="_blank" class="whatsapp-send-btn">
+                        <i class="fab fa-whatsapp"></i> ${currentLang === 'ar' ? 'إرسال الوصل عبر واتساب' : 'Envoyer le reçu via WhatsApp'}
+                    </a>
+                </div>
             </div>
             <button class="modal-close-btn" onclick="closePaymentModal()">
                 <i class="fas fa-times"></i> ${currentLang === 'ar' ? 'إغلاق' : 'Fermer'}
@@ -258,6 +261,28 @@ function openBaridiMob() {
         </div>
     `;
     document.body.appendChild(modal);
+}
+
+// Copy RIP number
+function copyRip() {
+    const ripText = document.getElementById('rip-number').textContent;
+    navigator.clipboard.writeText(ripText).then(() => {
+        const btn = document.querySelector('.copy-rip-btn');
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i>';
+        }, 2000);
+        showAlert(currentLang === 'ar' ? 'تم نسخ رقم RIP' : 'Numéro RIP copié', 'success');
+    }).catch(() => {
+        // Fallback
+        const textArea = document.createElement('textarea');
+        textArea.value = ripText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showAlert(currentLang === 'ar' ? 'تم نسخ رقم RIP' : 'Numéro RIP copié', 'success');
+    });
 }
 
 // Close Payment Modal
