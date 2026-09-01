@@ -171,6 +171,15 @@ function approveMember(memberId) {
         const member = users[memberIndex];
         const userName = member.firstname + ' ' + member.lastname;
         
+        console.log('=== EmailJS Debug Info ===');
+        console.log('EmailJS available:', typeof emailjs !== 'undefined');
+        console.log('Member email:', member.email);
+        console.log('Member name:', userName);
+        console.log('Activation code:', code);
+        console.log('Service ID:', EMAILJS_CONFIG.serviceId);
+        console.log('Template ID:', EMAILJS_CONFIG.templateId);
+        console.log('Public Key:', EMAILJS_CONFIG.publicKey);
+        
         // Initialize EmailJS
         initEmailJS();
         
@@ -185,7 +194,11 @@ function approveMember(memberId) {
                 );
             })
             .catch((error) => {
-                console.error('Email error:', error);
+                console.error('=== EmailJS Error ===');
+                console.error('Error:', error);
+                console.error('Error status:', error.status);
+                console.error('Error text:', error.text);
+                
                 // Fallback to WhatsApp
                 let formattedPhone = member.phone.replace(/\D/g, '');
                 if (formattedPhone.startsWith('0')) {
@@ -202,8 +215,8 @@ function approveMember(memberId) {
                 
                 showAlert(
                     currentLang === 'ar'
-                        ? `تم الموافقة على العضو. كود: ${code}\nفشل الإيميل - تم فتح واتساب`
-                        : `Membre approuvé. Code: ${code}\nÉchec email - WhatsApp ouvert`,
+                        ? `تم الموافقة على العضو. كود: ${code}\nفشل الإيميل - تم فتح واتساب (${error.text || error.message || 'خطأ غير معروف'})`
+                        : `Membre approuvé. Code: ${code}\nÉchec email - WhatsApp ouvert (${error.text || error.message || 'Unknown error'})`,
                     'warning'
                 );
             });
