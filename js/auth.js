@@ -375,10 +375,21 @@ function handleLogin(event) {
         return;
     }
 
-    // Check activation code if required
-    if (user.activationCode && activationCode !== user.activationCode) {
+    // Check activation code is required
+    if (!user.activationCode) {
         showAlert(
-            currentLang === 'ar' ? 'كود التفعيل غير صحيح' : 'Code d\'activation incorrect',
+            currentLang === 'ar'
+                ? 'لم يتم تفعيل حسابك بعد. في انتظار موافقة الإدارة.'
+                : 'Votre compte n\'est pas encore activé. En attente d\'approbation.',
+            'warning'
+        );
+        return;
+    }
+
+    // Check activation code matches
+    if (activationCode !== user.activationCode) {
+        showAlert(
+            currentLang === 'ar' ? 'كود التفعيل غير صحيح. تحقق من الرسالة المرسلة عبر واتساب.' : 'Code d\'activation incorrect. Vérifiez le message envoyé via WhatsApp.',
             'error'
         );
         return;

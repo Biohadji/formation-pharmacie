@@ -115,7 +115,18 @@ function showPage(page) {
                     : 'Vous devez vous inscrire d\'abord pour accéder à cette page',
                 'warning'
             );
-            showPage('registration');
+            showPage('register');
+            return;
+        }
+        // Check if activation code is entered
+        if (!currentUser.activationCode) {
+            showAlert(
+                currentLang === 'ar'
+                    ? 'يجب إدخال كود التفعيل أولاً. تحقق من واتساب.'
+                    : 'Vous devez entrer le code d\'activation. Vérifiez WhatsApp.',
+                'warning'
+            );
+            showPage('login');
             return;
         }
     }
