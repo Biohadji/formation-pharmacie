@@ -388,16 +388,19 @@ function handleLogin(event) {
 
     // Check activation code matches (trim and uppercase for comparison)
     const enteredCode = activationCode.trim().toUpperCase();
-    const storedCode = user.activationCode.trim().toUpperCase();
+    const storedCode = user.activationCode ? user.activationCode.trim().toUpperCase() : '';
     
     console.log('=== Activation Code Debug ===');
+    console.log('User email:', email);
+    console.log('User status:', user.status);
+    console.log('User activationCode:', user.activationCode);
     console.log('Entered code:', enteredCode);
     console.log('Stored code:', storedCode);
     console.log('Match:', enteredCode === storedCode);
     
     if (enteredCode !== storedCode) {
         showAlert(
-            currentLang === 'ar' ? 'كود التفعيل غير صحيح. تحقق من بريدك الإلكتروني.' : 'Code d\'activation incorrect. Vérifiez votre email.',
+            currentLang === 'ar' ? `كود التفعيل غير صحيح. الكود المدخل: ${enteredCode} - الكود المخزّن: ${storedCode}` : 'Code d\'activation incorrect.',
             'error'
         );
         return;
