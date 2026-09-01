@@ -662,34 +662,51 @@ function loadCertificatePage() {
     const currentUser = getFromStorage(STORAGE_KEYS.CURRENT_USER, null);
     if (!currentUser) return;
 
-    const certificates = getFromStorage(STORAGE_KEYS.CERTIFICATES, []);
-    const userCert = certificates.find(c => c.userId === currentUser.id);
+    const scores = getFromStorage(STORAGE_KEYS.SCORES, {});
+    const userScores = scores[currentUser.id] || {};
+    
+    // Check if both sections have 10/10 (100%)
+    const section1 = userScores['section1'];
+    const section2 = userScores['section2'];
+    const hasPerfectScore = section1 && section1.percentage === 100 && section2 && section2.percentage === 100;
+    
     const container = document.getElementById('certificate-area');
     if (!container) return;
 
-    if (userCert) {
+    if (hasPerfectScore) {
+        // Show certificate
         container.innerHTML = `
-            <div class="certificate">
+            <div class="certificate" id="certificate-content">
                 <div class="certificate-border">
                     <div class="certificate-content">
                         <div class="cert-header">
-                            <i class="fas fa-prescription-bottle-medical"></i>
-                            <h2>${currentLang === 'ar' ? 'أكاديمية صيدلية عبد العزيز' : 'Académie Pharmacie Abdelaziz'}</h2>
-                            <p>${currentLang === 'ar' ? 'للتكوين المستمر' : 'Formation Continue'}</p>
+                            <img src="img/logo.svg" alt="شعار الصيدلية" class="cert-logo">
+                            <h2>أكاديمية صيدلية عبد العزيز</h2>
+                            <p>للتكوين المستمر</p>
                         </div>
                         <div class="cert-body">
-                            <h3>${currentLang === 'ar' ? 'شهادة مشاركة' : 'Certificat de Participation'}</h3>
-                            <p class="cert-text">${currentLang === 'ar' ? 'يمنح الشهادة إلى' : 'Ce certificat est décerné à'}</p>
+                            <h3>شهادة مشاركة</h3>
+                            <p class="cert-text">يمنح الشهادة إلى</p>
                             <h2 class="cert-name">${currentUser.firstname} ${currentUser.lastname}</h2>
-                            <p class="cert-text">${currentLang === 'ar' ? 'نظراً لاجتيازه دورة' : 'Pour avoir réussi le cours de'}</p>
-                            <h3 class="cert-course">${userCert.course === 'seller' ? (currentLang === 'ar' ? 'بائع في الصيدلية' : 'Vendeur en Pharmacie') : (currentLang === 'ar' ? 'محضر صيدلاني' : 'Préparateur en Pharmacie')}</h3>
-                            <p class="cert-score">${currentLang === 'ar' ? 'بدرجة:' : 'Avec une note de:'} <strong>${userCert.score}%</strong></p>
-                            <div class="cert-date">${new Date(userCert.issuedAt).toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'fr-FR')}</div>
+                            <p class="cert-text">نظراً لاجتيازه دورة</p>
+                            <h3 class="cert-course">بائع في الصيدلية / محضر صيدلاني</h3>
+                            <div class="cert-scores">
+                                <p>القسم الأول: ${section1.correct}/${section1.total} (100%)</p>
+                                <p>القسم الثاني: ${section2.correct}/${section2.total} (100%)</p>
+                            </div>
+                            <div class="cert-date">${new Date().toLocaleDateString('ar-DZ')}</div>
                         </div>
                         <div class="cert-footer">
+                            <div class="cert-stamp">
+                                <div class="stamp-circle">
+                                    <span class="stamp-text">صيدلية عبد العزيز</span>
+                                    <span class="stamp-text">إبراهيم</span>
+                                </div>
+                            </div>
                             <div class="cert-signature">
                                 <div class="signature-line"></div>
-                                <p>${currentLang === 'ar' ? 'صيدلية عبد العزيز إبراهيم' : 'Pharmacie Abdelaziz Ibrahim'}</p>
+                                <p>صيدلية عبد العزيز إبراهيم</p>
+                                <p class="signature-title">المدير</p>
                             </div>
                         </div>
                     </div>
@@ -697,18 +714,62 @@ function loadCertificatePage() {
             </div>
             <div class="certificate-actions">
                 <button onclick="printCertificate()" class="print-cert-btn">
-                    <i class="fas fa-print"></i> ${currentLang === 'ar' ? 'طباعة الشهادة' : 'Imprimer'}
+                    <i class="fas fa-print"></i> طباعة الشهادة
                 </button>
             </div>
         `;
     } else {
+        // Show progress and message
+        let progressHtml = '<div class="cert-progress"><h3>تقدمك في التقييم</h3>';
+        
+        if (section1) {
+            const s1Class = section1.percentage === 100 ? 'complete' : 'incomplete';
+            progressHtml += `
+                <div class="progress-item ${s1Class}">
+                    <span>القسم الأول (بائع):</span>
+                    <span class="progress-score">${section1.correct}/${section1.total} (${section1.percentage}%)</span>
+                    ${section1.percentage === 100 ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>'}
+                </div>
+            `;
+        } else {
+            progressHtml += `
+                <div class="progress-item incomplete">
+                    <span>القسم الأول (بائع):</span>
+                    <span class="progress-score">لم يكتمل</span>
+                    <i class="fas fa-times-circle"></i>
+                </div>
+            `;
+        }
+        
+        if (section2) {
+            const s2Class = section2.percentage === 100 ? 'complete' : 'incomplete';
+            progressHtml += `
+                <div class="progress-item ${s2Class}">
+                    <span>القسم الثاني (محضر):</span>
+                    <span class="progress-score">${section2.correct}/${section2.total} (${section2.percentage}%)</span>
+                    ${section2.percentage === 100 ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>'}
+                </div>
+            `;
+        } else {
+            progressHtml += `
+                <div class="progress-item incomplete">
+                    <span>القسم الثاني (محضر):</span>
+                    <span class="progress-score">لم يكتمل</span>
+                    <i class="fas fa-times-circle"></i>
+                </div>
+            `;
+        }
+        
+        progressHtml += '</div>';
+        
         container.innerHTML = `
             <div class="no-certificate">
                 <i class="fas fa-certificate"></i>
-                <h3>${currentLang === 'ar' ? 'لم تحصل على شهادة بعد' : 'Pas encore de certificat'}</h3>
-                <p>${currentLang === 'ar' ? 'أكمل التقييم بنجاح للحصول على شهادة المشاركة' : 'Réussissez l\'évaluation pour obtenir votre certificat'}</p>
+                <h3>لم تحصل على شهادة بعد</h3>
+                <p>يجب الحصول على 10/10 في كلا القسمين للحصول على الشهادة</p>
+                ${progressHtml}
                 <button onclick="showPage('assessment')" class="go-assessment-btn">
-                    <i class="fas fa-play"></i> ${currentLang === 'ar' ? 'اذهب للتقييم' : 'Aller à l\'évaluation'}
+                    <i class="fas fa-play"></i> اذهب للتقييم
                 </button>
             </div>
         `;

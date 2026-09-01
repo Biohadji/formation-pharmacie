@@ -97,6 +97,23 @@ function submitSectionQuiz(sectionId, type) {
         document.getElementById(`${sectionId}-expl-${index}`).style.display = 'block';
     });
 
+    // Save score to localStorage
+    const currentUser = getFromStorage(STORAGE_KEYS.CURRENT_USER, null);
+    if (currentUser) {
+        const scores = getFromStorage(STORAGE_KEYS.SCORES, {});
+        if (!scores[currentUser.id]) {
+            scores[currentUser.id] = {};
+        }
+        scores[currentUser.id][sectionId] = {
+            correct: correctCount,
+            total: questions.length,
+            percentage: Math.round((correctCount / questions.length) * 100),
+            completedAt: new Date().toISOString()
+        };
+        saveToStorage(STORAGE_KEYS.SCORES, scores);
+        console.log(`Score saved for ${sectionId}:`, scores[currentUser.id][sectionId]);
+    }
+
     // Show result
     showSectionQuizResult(sectionId, correctCount, questions.length);
 }
@@ -253,6 +270,24 @@ function submitAssessment() {
 
     showAssessmentResult(correctCount, currentQuizQuestions.length);
     document.getElementById('aq-submit-btn').disabled = true;
+
+    // Save assessment score to localStorage
+    const currentUser = getFromStorage(STORAGE_KEYS.CURRENT_USER, null);
+    if (currentUser) {
+        const scores = getFromStorage(STORAGE_KEYS.SCORES, {});
+        if (!scores[currentUser.id]) {
+            scores[currentUser.id] = {};
+        }
+        scores[currentUser.id]['assessment'] = {
+            correct: correctCount,
+            total: currentQuizQuestions.length,
+            percentage: Math.round((correctCount / currentQuizQuestions.length) * 100),
+            type: currentAssessmentType,
+            completedAt: new Date().toISOString()
+        };
+        saveToStorage(STORAGE_KEYS.SCORES, scores);
+        console.log('Assessment score saved:', scores[currentUser.id]['assessment']);
+    }
 }
 
 // Show Assessment Result
