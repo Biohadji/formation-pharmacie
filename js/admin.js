@@ -167,59 +167,46 @@ function approveMember(memberId) {
         });
         saveToStorage(STORAGE_KEYS.ACTIVATION_CODES, codes);
 
-        // Send activation code via WhatsApp
+        // Send activation code via Email
         const member = users[memberIndex];
         const userName = member.firstname + ' ' + member.lastname;
-        const phone = member.phone;
         
-        // Format phone number for WhatsApp (digits only)
-        let formattedPhone = phone.replace(/\D/g, ''); // Remove all non-digits
+        // Initialize EmailJS
+        initEmailJS();
         
-        // Ensure it starts with country code (213 for Algeria)
-        if (formattedPhone.startsWith('0')) {
-            formattedPhone = '213' + formattedPhone.substring(1);
-        } else if (!formattedPhone.startsWith('213')) {
-            formattedPhone = '213' + formattedPhone;
-        }
-        
-        // WhatsApp message - simple and clean
-        const whatsappMessage = `مرحباً ${userName}\n\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز\nكود التفعيل: ${code}\n\nالبريد: ${member.email}\nشكراً لك`;
-        
-        // Build WhatsApp URL
-        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
-        
-        // Try to open WhatsApp
-        try {
-            const newWindow = window.open(whatsappUrl, '_blank');
-            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                // Popup blocked - copy message and show instructions
-                copyToClipboard(whatsappMessage);
+        // Send email with activation code
+        sendActivationEmail(member.email, userName, code)
+            .then(() => {
                 showAlert(
                     currentLang === 'ar'
-                        ? `تم الموافقة على العضو. كود: ${code}\nتم نسخ الرسالة. الصقها في واتساب: ${formattedPhone}`
-                        : `Membre approuvé. Code: ${code}\nMessage copié. Collez-le dans WhatsApp: ${formattedPhone}`,
-                    'warning'
-                );
-            } else {
-                // WhatsApp opened successfully
-                copyToClipboard(whatsappMessage);
-                showAlert(
-                    currentLang === 'ar'
-                        ? `تم الموافقة على العضو. كود: ${code}\nتم فتح واتساب - أرسل الرسالة`
-                        : `Membre approuvé. Code: ${code}\nWhatsApp ouvert - envoyez le message`,
+                        ? `تم الموافقة على العضو. كود: ${code}\nتم إرسال الكود عبر البريد الإلكتروني إلى: ${member.email}`
+                        : `Membre approuvé. Code: ${code}\nCode envoyé par email à: ${member.email}`,
                     'success'
                 );
-            }
-        } catch (e) {
-            // Error opening WhatsApp
-            copyToClipboard(whatsappMessage);
-            showAlert(
-                currentLang === 'ar'
-                    ? `تم الموافقة على العضو. كود: ${code}\nتم نسخ الرسالة. أرسلها يدوياً عبر واتساب`
-                    : `Membre approuvé. Code: ${code}\nMessage copié. Envoyez-le manuellement via WhatsApp`,
-                'warning'
-            );
-        }
+            })
+            .catch((error) => {
+                console.error('Email error:', error);
+                // Fallback to WhatsApp
+                let formattedPhone = member.phone.replace(/\D/g, '');
+                if (formattedPhone.startsWith('0')) {
+                    formattedPhone = '213' + formattedPhone.substring(1);
+                } else if (!formattedPhone.startsWith('213')) {
+                    formattedPhone = '213' + formattedPhone;
+                }
+                
+                const whatsappMessage = `مرحباً ${userName}\n\nتم تفعيل حسابك في أكاديمية صيدلية عبد العزيز\nكود التفعيل: ${code}\n\nالبريد: ${member.email}\nشكراً لك`;
+                const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+                
+                copyToClipboard(whatsappMessage);
+                window.open(whatsappUrl, '_blank');
+                
+                showAlert(
+                    currentLang === 'ar'
+                        ? `تم الموافقة على العضو. كود: ${code}\nفشل الإيميل - تم فتح واتساب`
+                        : `Membre approuvé. Code: ${code}\nÉchec email - WhatsApp ouvert`,
+                    'warning'
+                );
+            });
 
         loadAdminData();
     }

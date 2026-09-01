@@ -122,8 +122,8 @@ function showPage(page) {
         if (!currentUser.activationCode) {
             showAlert(
                 currentLang === 'ar'
-                    ? 'يجب إدخال كود التفعيل أولاً. تحقق من واتساب.'
-                    : 'Vous devez entrer le code d\'activation. Vérifiez WhatsApp.',
+                    ? 'يجب إدخال كود التفعيل أولاً. تحقق من بريدك الإلكتروني.'
+                    : 'Vous devez entrer le code d\'activation. Vérifiez votre email.',
                 'warning'
             );
             showPage('login');

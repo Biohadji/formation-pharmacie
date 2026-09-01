@@ -168,8 +168,8 @@ function showRegistrationSuccess() {
             <h2>${currentLang === 'ar' ? 'تم التسجيل بنجاح!' : 'Inscription réussie !'}</h2>
             <div class="modal-message">
                 <p>${currentLang === 'ar'
-                    ? 'ستتلقى كود التفعيل للدورة عبر رسالة في الواتساب'
-                    : 'Vous recevrez le code d\'activation via WhatsApp'}</p>
+                    ? 'ستتلقى كود التفعيل عبر البريد الإلكتروني'
+                    : 'Vous recevrez le code d\'activation par email'}</p>
                 <div class="payment-notice">
                     <i class="fas fa-info-circle"></i>
                     <p><strong>${currentLang === 'ar'
@@ -389,7 +389,7 @@ function handleLogin(event) {
     // Check activation code matches
     if (activationCode !== user.activationCode) {
         showAlert(
-            currentLang === 'ar' ? 'كود التفعيل غير صحيح. تحقق من الرسالة المرسلة عبر واتساب.' : 'Code d\'activation incorrect. Vérifiez le message envoyé via WhatsApp.',
+            currentLang === 'ar' ? 'كود التفعيل غير صحيح. تحقق من بريدك الإلكتروني.' : 'Code d\'activation incorrect. Vérifiez votre email.',
             'error'
         );
         return;
