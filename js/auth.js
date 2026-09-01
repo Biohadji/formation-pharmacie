@@ -247,7 +247,7 @@ function openBaridiMob() {
                     </ol>
                 </div>
                 <div class="payment-actions">
-                    <a href="https://baridimob.com" target="_blank" class="baridimob-open-btn">
+                    <a href="https://eccp.poste.dz/commande-edahabia" target="_blank" class="baridimob-open-btn">
                         <i class="fas fa-mobile-alt"></i> ${currentLang === 'ar' ? 'فتح بريدي موب' : 'Ouvrir BaridiMob'}
                     </a>
                     <a href="https://wa.me/213549659691?text=${encodeURIComponent(currentLang === 'ar' ? 'تم الدفع - إرفاق الوصل' : 'Paiement effectué - Joindre le reçu')}" target="_blank" class="whatsapp-send-btn">
