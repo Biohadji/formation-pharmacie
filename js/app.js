@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', function() {
         currentLang = savedLang;
     }
     
+    // Check if user is logged in
+    const currentUser = getFromStorage('pharmacy_current_user', null);
+    if (!currentUser) {
+        // Not logged in - show registration page
+        showPage('register');
+    }
+    
     // Add lesson navigation after DOM is loaded
     setTimeout(addLessonNavigation, 100);
 });
